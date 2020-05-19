@@ -1,0 +1,71 @@
+.LineHolder {
+    display: grid;
+    /* grid-auto-flow: column; */
+    grid-template-columns: repeat(8, minmax(50px, 1fr));
+}
+
+.LineHolder>a {
+    color: black;
+    font-weight: bold;
+}
+
+.columnTime {
+    display: grid;
+    border-bottom: 1px solid black;
+    border-left: 1px solid black;
+    justify-content: center;
+}
+
+.columnDay {
+    display: grid;
+    border-bottom: 1px solid black;
+    border-left: 1px solid black;
+    justify-content: center;
+}
+
+.columnDay:last-of-type {
+    border-right: 1px solid black;
+}
+
+.selectCours {
+    border: none;
+    padding: 2px;
+}
+
+.coursPadding {
+    margin-bottom: 10px;
+}
+
+.columnDay>select {
+    width: 100px;
+}
+
+select:focus {
+    outline: none;
+}
+
+.columnTime {
+    border-left: 1px solid black;
+}
+
+h3 {
+    display: inline;
+    font-weight: 350;
+}
+
+.th {
+    border-top: 1px solid black;
+    /* font-weight: 450; */
+}
+
+#fromTime,
+#toTime {
+    width: 40px;
+    border: none;
+    text-align: center;
+    font-weight: 500;
+}
+
+.timetableBottom {
+    margin-top: 20px;
+}

@@ -1,0 +1,56 @@
+.newFiliere,
+.filiereNiveauMax {
+    margin-right: 5px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid black;
+}
+
+.filiereNiveauMax {
+    width: 70px;
+}
+
+.newFiliereSubmit {
+    padding: 5px;
+    border: none;
+    background-color: #3157A0;
+    border-radius: 7px;
+}
+
+.StyledFiliere h2 {
+    margin: 0;
+}
+
+.StyledFiliere {
+    display: grid;
+    /* grid-auto-flow: column; */
+    grid-template-columns: repeat(5, minmax(50px, 200px));
+    margin-top: 10px;
+    justify-content: start;
+}
+
+.newFilierSubmit,
+.newFilierSubmit1 {
+    border: none;
+    border-radius: 5px;
+    margin-left: 3px;
+    font-weight: bold;
+    padding: 1px;
+    background-color: red;
+    color: white;
+}
+
+.newFilierSubmit1 {
+    background-color: #288A55;
+}
+
+.newFilierep {
+    background-color: brown;
+    color: white;
+}
+
+.fa-plus-circle,
+.fa-minus-circle {
+    border: none;
+    color: black;
+}

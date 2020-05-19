@@ -1,0 +1,50 @@
+.headerNavBar {
+    display: grid;
+    height: 60px;
+    background-color: #3157A0;
+    padding: 10px 2%;
+    position: relative;
+}
+
+@media(max-width:500px) {
+    .avatarLogin {
+        visibility: hidden;
+    }
+}
+
+.studentNav {
+    display: grid;
+    background-color: #3157A0;
+    grid-auto-flow: column;
+    align-content: center;
+    padding: 10px;
+}
+
+.studentNav .theLinks {
+    justify-self: end;
+}
+
+.theLinks {
+    display: grid;
+    grid-auto-flow: column;
+    align-content: center;
+}
+
+.theLinks a {
+    color: white;
+    border: 1px solid white;
+    width: fit-content;
+    padding: 5px 10px;
+    border-radius: 10px;
+    margin-left: 5px;
+}
+
+.signout {
+    background-color: red;
+}
+
+.avatarStart {
+    position: absolute;
+    top: 15%;
+    justify-self: center;
+}

@@ -1,0 +1,19 @@
+.header-logo {
+    display: grid;
+    grid-auto-flow: column;
+    justify-content: start;
+}
+
+.header-logo img {
+    width: 50px;
+    height: 50px;
+}
+
+.nameApp {
+    font-family: Bai Jamjuree;
+    font-weight: bold;
+    font-size: 1.70rem;
+    color: white;
+    margin-left: 5px;
+    align-self: center;
+}

@@ -1,0 +1,38 @@
+.displayStudentNotesHeader,
+.aStudentNote {
+    display: grid;
+    grid-template-columns: 50px repeat(2, minmax(100px, 1fr)) repeat(2, 100px);
+}
+
+.displayStudentNotesHeader span,
+.aStudentNote span {
+    text-align: center;
+    padding: 5px;
+}
+
+.displayStudentNotesHeader {
+    color: white;
+    font-weight: bolder;
+}
+
+.displayStudentNotesHeader span:nth-of-type(even) {
+    background-color: rgba(0, 0, 0, 0.829);
+}
+
+.displayStudentNotesHeader span:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.719);
+}
+
+.aStudentNote span:nth-of-type(even) {
+    background-color: teal;
+    font-weight: bolder;
+}
+
+.aStudentNote span:nth-of-type(odd) {
+    background-color: rgb(52, 235, 204);
+    font-weight: bolder;
+}
+
+.aStudentNote {
+    margin-bottom: 5px;
+}

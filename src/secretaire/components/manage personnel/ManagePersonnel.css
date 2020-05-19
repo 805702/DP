@@ -1,0 +1,80 @@
+.displayPersonnelListHeader {
+    display: grid;
+    grid-template-columns: 50px 100px 1fr 1fr 200px 100px 130px 150px;
+    background-color: black;
+    color: white;
+    padding: 5px;
+    font-weight: 600;
+}
+
+.displayPersonnelListHeader span,
+.personnel span {
+    text-align: center;
+}
+
+.displayPersonnelListHeader span:last-of-type {
+    background-color: white;
+    justify-self: stretch;
+    color: blue;
+    text-align: center;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+.personnel {
+    display: grid;
+    grid-template-columns: 50px 100px 1fr 1fr 200px 100px 130px 150px;
+    background-color: rgba(187, 178, 178, 0.514);
+    border-bottom: 2px solid white;
+}
+
+.personnel span:nth-child(odd) {
+    background-color: grey;
+    padding: 2px;
+}
+
+.personnelActionBtns {
+    display: grid;
+    grid-auto-flow: column;
+}
+
+.personnelActionBtns input {
+    border: none;
+    border-radius: 10px;
+    margin: 2px 3px;
+    color: white;
+}
+
+.personnelActionBtns input:first-of-type {
+    background-color: green;
+}
+
+.personnelActionBtns input:last-of-type {
+    background-color: red;
+}
+
+.newPersonnelOpening {
+    display: grid;
+    justify-content: center;
+    border: 1px solid black;
+    margin-top: -2px;
+    padding: 2px;
+}
+
+.newPersonnelOpening i {
+    color: blue;
+    font-size: 1.3rem;
+    text-align: center;
+}
+
+.newPersonnelForm {
+    display: grid;
+    grid-template-columns: 50px 100px 1fr 1fr 200px 100px 130px 150px;
+    margin-bottom: 2px;
+}
+
+.newPersonnelForm span,
+.newPersonnelForm input,
+.newPersonnelForm select {
+    text-align: center;
+}

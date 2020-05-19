@@ -1,0 +1,93 @@
+.teacherNotesOverallHolder {
+    display: grid;
+}
+
+.teacherNotesSelect {
+    display: grid;
+    grid-auto-flow: column;
+    background-color: rgba(0, 0, 0, 0.397);
+    margin-bottom: 5px;
+    padding: 10px;
+}
+
+#idCour,
+#idClasse,
+#typeEvaluation {
+    width: fit-content;
+    font-size: 1.2rem;
+    background-color: rgba(0, 0, 0, 0.397);
+    border: 1px solid black;
+    color: white;
+    justify-self: center;
+}
+
+.noteBtns {
+    display: grid;
+    grid-auto-flow: column;
+    justify-content: stretch;
+}
+
+.noteBtns button {
+    justify-self: center;
+    background-color: turquoise;
+    border: none;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 10px;
+}
+
+.noteBtns button:focus {
+    outline: none;
+}
+
+.displayTeacherNotes {
+    display: grid;
+}
+
+.displayTeacherNotesHeader,
+.displayTeacherGivenNotes .studentNote {
+    display: grid;
+    grid-template-columns: 50px 1fr 3fr 100px;
+}
+
+.displayTeacherGivenNotesView .studentNote,
+.displayTeacherNotesHeaderView {
+    display: grid;
+    grid-template-columns: 50px 1fr 3fr 100px 150px 150px;
+}
+
+.displayTeacherNotesHeader span {
+    text-align: center;
+    font-weight: 600;
+    color: white;
+    padding: 3px 0;
+    margin-top: 10px;
+}
+
+.displayTeacherNotesHeader span:nth-of-type(even) {
+    background-color: rgba(0, 0, 0, 0.829);
+}
+
+.displayTeacherNotesHeader span:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.719);
+}
+
+.displayTeacherGivenNotes .studentNote {
+    padding: 3px;
+    margin-bottom: 10px;
+}
+
+.displayTeacherGivenNotes .studentNote span {
+    text-align: center;
+}
+
+.displayTeacherGivenNotes .studentNote:nth-of-type(odd) {
+    background-color: turquoise;
+    font-weight: bolder;
+}
+
+.displayTeacherGivenNotes .studentNote:nth-of-type(even) {
+    background-color: teal;
+    font-weight: bolder;
+}

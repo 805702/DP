@@ -1,0 +1,189 @@
+.QuestionnaireOverallHolder,
+.chosenSubject {
+    display: grid;
+}
+
+#concernedSubject {
+    justify-self: center;
+    background-color: turquoise;
+    font-size: 1.2rem;
+}
+
+.QuestionnaireOverallHolder .newEvaluationBtn,
+.QuestionnaireOverallHolder .QuestionnaireSaveBtn {
+    justify-self: start;
+    background-color: rgb(2, 0, 99);
+    margin-top: 10px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 10px;
+    padding: 2px 5px;
+    color: white;
+}
+
+.chosenSubject {
+    max-width: 400px;
+    border: 1px solid black;
+    margin-top: 10px;
+}
+
+.chosenSubject>span {
+    display: grid;
+    grid-auto-flow: column;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-align: center;
+    background-color: rgba(255, 0, 0, 0.671);
+}
+
+.evaluationListHolder {
+    display: grid;
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
+.evaluationListElement {
+    display: grid;
+    grid-auto-flow: column;
+    border: none;
+}
+
+.evaluationListElement span {
+    justify-self: center;
+    align-self: center;
+    display: grid;
+    grid-auto-flow: column;
+    font-weight: bolder;
+}
+
+.evaluationListElement span:nth-of-type(2) span {
+    text-align: center;
+    padding: 0 2px;
+}
+
+.evaluationListElement .actionBtns {
+    justify-self: stretch;
+    display: grid;
+    grid-auto-flow: column;
+}
+
+.evaluationListElement .actionBtns>input {
+    background-color: green;
+    border: none;
+    margin: 0 2px;
+    border-radius: 5px;
+    font-weight: 500;
+    color: white;
+    padding: 2px 5px;
+}
+
+.evaluationListElement>span>span {
+    justify-self: stretch;
+    display: grid;
+    grid-auto-flow: column;
+}
+
+.newEvaluationHeader {
+    display: grid;
+    grid-auto-flow: column;
+}
+
+.QuestionnaireChooseExamType {
+    justify-self: start;
+    background-color: rgb(2, 0, 99);
+    margin-top: 10px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 10px;
+    padding: 2px 5px;
+    color: white;
+}
+
+.QuestionnaireDisplayQuestionsOverallHolder {
+    height: 80vh;
+    overflow-y: scroll;
+    margin-top: 5px;
+}
+
+.QuestionnaireDisplayQuestionsOverallHolder>.fa {
+    margin: 10px;
+    font-size: 1.5rem;
+    margin-top: 5px;
+    color: rgb(0, 113, 128);
+}
+
+.question {
+    display: grid;
+    border-bottom: 1px solid black;
+    margin: 10px;
+}
+
+.question:last-of-type {
+    margin-bottom: 0;
+}
+
+.questionHeader {
+    font-weight: 400;
+    padding: 2px;
+    width: fit-content;
+    border-top-right-radius: 7px;
+    border-top-left-radius: 7px;
+    margin-top: 5px;
+    background-color: rgb(0, 113, 128);
+    color: white;
+}
+
+.indications {
+    font-weight: 200;
+    font-size: 0.9rem;
+    padding: 0 3px;
+    border-top: 1px solid black;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+}
+
+.taggedInput,
+.indications,
+.theQuestion,
+.answer,
+.question>input {
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    padding-left: 3px;
+    resize: none;
+}
+
+.taggedInput>input:last-of-type {
+    border: none;
+    margin-bottom: 2px;
+    border-radius: 5px;
+    font-weight: bold;
+    background-color: green;
+    color: white;
+}
+
+.taggedInput>.option {
+    background-color: white;
+    border: 1px solid black;
+    padding: 3px;
+    margin-top: 3px;
+}
+
+.questionnaireDureeHolder {
+    justify-self: start;
+    margin-top: 10px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 10px;
+    padding: 2px 5px;
+}
+
+.questionnaireDureeHolder>input,
+#deadline {
+    background-color: rgb(2, 0, 99);
+    color: white;
+    border: none;
+    padding: 5px;
+    border-radius: 10px;
+    margin-left: 10px;
+}

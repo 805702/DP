@@ -1,0 +1,53 @@
+.ClasseDefinirDateHolder {
+    display: grid;
+    grid-auto-flow: column;
+    justify-content: start;
+    font-weight: bold;
+}
+
+.ClasseDefinirDateHolder {
+    margin-bottom: 10px;
+}
+
+.ClasseDefinirLabelA {
+    margin-left: 17px;
+    margin-right: 17px;
+}
+
+.ClasseDefinirLabelD {
+    margin-right: 5px;
+}
+
+.classeDefinirInput::placeholder {
+    color: black;
+}
+
+.classeDefinirInput:focus {
+    outline: none;
+}
+
+.classeDefinirInput:hover {
+    background-color: white;
+}
+
+.classeDefinirInput {
+    background-color: rgba(196, 196, 196, 0.25);
+    border: 1px solid;
+    text-align: center;
+}
+
+.ClasseDefinir {
+    display: grid;
+    justify-content: center;
+}
+
+.className {
+    justify-self: center;
+    font-size: 1.4rem;
+    font-weight: bolder;
+    color: #3157A0;
+    padding: 2px 50px;
+    margin-bottom: 10px;
+    border: 1px solid grey;
+    border-radius: 5px;
+}

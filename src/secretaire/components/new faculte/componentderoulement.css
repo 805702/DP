@@ -1,0 +1,146 @@
+/* Le conteneur principale et ses donnees*/
+
+.container,
+.CDHeader,
+.CDMain {
+    margin: 0;
+    padding: 0;
+}
+
+.CDcontainer {
+    display: flex;
+    flex-direction: column;
+    border: 2px solid #3157A0;
+}
+
+.facultyHead {
+    display: grid;
+    grid-auto-flow: column;
+    align-content: center;
+    background-color: #C1D1EA;
+}
+
+.facultyHead .CDTitle {
+    font-size: 2.2em;
+    font-family: Roboto;
+    margin-left: 0.15em;
+}
+
+.facultyHead .CDIcon {
+    margin-right: 0.15em;
+    border: none;
+    background-color: transparent;
+    font-size: 1.5rem;
+    justify-self: end;
+}
+
+.CDMain {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin-top: 0.5em;
+    width: 100%;
+}
+
+.CDMain * {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: #C1D1EA;
+    margin-top: 0.5em;
+    width: 99.6%;
+}
+
+
+/*	 Mobile devices	*/
+
+@media screen and (max-width: 479px) {
+    .CDHeader {
+        height: 2.2em;
+    }
+    .CDHeader .CDTitle {
+        font-size: 1.5em;
+        margin-top: 0.2em;
+    }
+    .CDHeader .CDIcon {
+        font-size: 1.5em;
+        margin-top: 0.2em;
+        margin-right: 0.15em;
+    }
+    /* .CDHeader .icon * {
+        position: relative;
+        bottom: 0.23em;
+    } */
+}
+
+
+/*	Desktop devices	*/
+
+@media screen and (min-width: 480px) {
+    .CDHeader {
+        height: 3.2em;
+    }
+    .CDHeader .CDTitle {
+        font-size: 2.2em;
+        margin-top: 0.14em;
+    }
+    .CDHeader .CDIcon {
+        font-size: 2em;
+        margin-top: 0.14em;
+        margin-right: 0.15em;
+    }
+    /* .CDHeader .icon * {
+        position: relative;
+        bottom: 0.18em;
+    } */
+}
+
+.endPart {
+    display: grid;
+    grid-auto-flow: column;
+    justify-self: end;
+}
+
+.deleteFaculty {
+    background-color: red;
+    border: none;
+    border-radius: 10px;
+    align-self: center;
+    padding: 4px;
+    color: white;
+    font-weight: bold;
+}
+
+.deleteFaculty:focus {
+    outline: none;
+}
+
+.facultyFilieres {
+    display: grid;
+}
+
+.facultyFiliereData {
+    display: grid;
+    grid-template-columns: 50px 1fr 50px;
+    grid-auto-flow: column;
+    align-self: center;
+}
+
+.facultyFiliereData h3 {
+    margin: 2px;
+    text-align: center;
+}
+
+.facultyFiliereData h3:nth-last-child(2) {
+    padding-left: 10px;
+    text-align: start;
+}
+
+.facultyFilieres {
+    height: 130px;
+    overflow-y: scroll;
+}
+
+.facultyFiliereData:nth-child(even) {
+    background-color: rgba(75, 62, 62, 0.719);
+}

@@ -1,0 +1,26 @@
+.footer {
+    background-color: rgba(0, 0, 0, 0.83);
+    color: white;
+    min-height: 1.5em;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+}
+
+
+/* @media screen and (max-width: 479px) {
+    .footer span {
+        margin-left: 2%;
+        font-size: 0.6em;
+        line-height: 25px;
+    }
+}
+
+@media screen and (min-width: 480px) {
+    .footer span {
+        margin-left: 1%;
+        font-size: 1.5em;
+        line-height: 45px;
+    }
+} */

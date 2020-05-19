@@ -1,0 +1,67 @@
+.fileSupportCours {
+    display: grid;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.fileSupportCours input {
+    margin: 5px 0;
+}
+
+.newFileInfo {
+    display: grid;
+}
+
+.newFileInfo span {
+    padding-left: 5px;
+    font-weight: 600;
+}
+
+.newFileInfo span:nth-of-type(even) {
+    background-color: rgba(0, 0, 0, 0.685);
+    color: white;
+}
+
+.newFileInfo span:nth-of-type(odd) {
+    background-color: rgba(55, 128, 224, 0.753);
+    color: white;
+}
+
+.newFileInfo div {
+    justify-self: center;
+    margin-top: 3px;
+}
+
+.newFileInfo div button {
+    font-size: 1rem;
+    background-color: rgba(7, 0, 99, 0.753);
+    border: none;
+    border-radius: 5px;
+    font-weight: bolder;
+    color: white;
+}
+
+.courHeader {
+    display: grid;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid black;
+}
+
+.nomForumCour,
+.concernedClassesForum {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.message {
+    display: grid;
+}
+
+.messageRef {
+    justify-self: center;
+}
+
+.messageImage {
+    width: 200px;
+}

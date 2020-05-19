@@ -1,0 +1,54 @@
+.sendMailForm {
+    display: grid;
+    justify-content: center;
+    margin-top: 70px;
+}
+
+.sendMailForm .recoveryMail,
+.sendMailForm .recoveryCode {
+    border-radius: 5px;
+    padding: 10px;
+    text-align: center;
+}
+
+.recoveryCode {
+    padding-left: 0;
+}
+
+.sendMailForm input:focus {
+    outline: none;
+}
+
+.sendMailForm i {
+    border: 1px solid black;
+    margin-bottom: 10px;
+    padding: 3px 0;
+    padding-left: 6px;
+    border-radius: 10px;
+}
+
+.fa>input {
+    border: none;
+    text-align: center;
+    padding-left: 0;
+    background-color: transparent;
+}
+
+.recoveryCode {
+    justify-self: center;
+    width: 50px;
+    border: 1px solid black;
+}
+
+.sendMailBtn {
+    border: none;
+    justify-self: center;
+    margin-top: 50px;
+    padding: 10px;
+    border-radius: 5px;
+    width: 130px;
+    background-color: #28A08B;
+    color: white;
+    font-weight: bold;
+    font-size: 1.1rem;
+}

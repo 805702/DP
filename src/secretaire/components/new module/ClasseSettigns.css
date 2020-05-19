@@ -1,0 +1,58 @@
+.classeSettingsContainer {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #3157A0;
+    box-sizing: border-box;
+    border-radius: 10px;
+    min-width: 100%;
+}
+
+.settingsBlockHeader {
+    text-align: center;
+    background-color: #50E6EF;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.chooseSettingsClass {
+    background-color: turquoise;
+    padding: 5px;
+    display: grid;
+    grid-auto-flow: column;
+}
+
+.nouveauModuleHeader {
+    font-size: 1.3rem;
+    display: grid;
+    grid-auto-flow: column;
+    border: 1px solid black;
+}
+
+.nouveauModuleName {
+    font-weight: 600;
+}
+
+#nomNewModule,
+#codeNewModule,
+#creditNewModule {
+    font-size: 1.05rem;
+    width: 160px;
+}
+
+.newSubjectsInputs>input:last-of-type {
+    color: white;
+    font-weight: 600;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background-color: turquoise;
+    margin-top: 10px;
+}
+
+.nouveauModuleInputs>input:last-of-type {
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background-color: green;
+    margin-top: 5px;
+}

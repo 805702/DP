@@ -1,0 +1,30 @@
+.studentTimeTableOverall {
+    display: grid;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.studentTimeTableHeader {
+    justify-self: center;
+    font-weight: bolder;
+    margin-bottom: 20px;
+}
+
+.day_cours {
+    justify-self: center;
+}
+
+.columnDay {
+    align-content: flex-start;
+    padding: 5px;
+}
+
+.columnTime {
+    padding: 5px;
+}
+
+.alignTableCenter {
+    display: grid;
+    height: 100vh;
+    align-content: center;
+}
