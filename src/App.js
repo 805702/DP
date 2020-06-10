@@ -23,7 +23,7 @@ import TimeTableFormat from './coordonateur/components/TimeTableFormat';
 import PublierNoteExamen from './coordonateur/components/PublierNoteExamen';
 import TeacherForum from './enseignant/TeacherForum';
 import StudentForum from './etudiants/StudentForum';
-import CreateStudents frsom './secretaire/components/CreateStudents';
+import CreateStudents from './secretaire/components/CreateStudents';
 import DisplayStudents from './secretaire/components/DisplayStudents';
 
 class App extends React.Component {
