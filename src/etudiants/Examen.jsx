@@ -12,7 +12,8 @@ class Examen extends Component {
         idEtudiant:null,
         idEvaluation:'',
         newPropositions:[],
-        questionOrder:[]
+        questionOrder:[],
+        composer:false
     }
 
     componentDidMount() {
@@ -125,18 +126,23 @@ class Examen extends Component {
 
     getAllDueCompos=()=>{
         let subjectIDs=this.getAllIdCours()
+        console.log(this.adjustGmtTime(1))
         console.log(this.props.evaluations)
         let compos = subjectIDs.map(idSubject=>this.props.evaluations.filter(evaluation=>{
-            let theTime = evaluation.dateTime.split(' ')[4].split(':')
-            theTime=theTime[0]+':'+theTime[1]
-            theTime = this.addTimes(theTime, evaluation.duree)
+            console.log(evaluation)
+            if(evaluation.deadLine!==undefined && evaluation.dateTime!==''){
+                let theTime = evaluation.dateTime.split(' ')[4].split(':')
+                theTime=theTime[0]+':'+theTime[1]
+                theTime = this.addTimes(theTime, evaluation.duree)
 
-            let theDate = evaluation.dateTime.split(' ')
-            theDate[4]=theTime
-            theDate=theDate[0]+' '+theDate[1]+' '+theDate[2]+' '+theDate[3]+' '+theDate[4]
-            return evaluation.idCour===idSubject && new Date(theDate)>=new Date() && evaluation.published && evaluation.idTypeEvaluation!==3
+                let theDate = evaluation.dateTime.split(' ')
+                theDate[4]=theTime
+                theDate=theDate[0]+' '+theDate[1]+' '+theDate[2]+' '+theDate[3]+' '+theDate[4]
+                return evaluation.idCour===idSubject && new Date(theDate)>=this.adjustGmtTime(1) && evaluation.published && evaluation.idTypeEvaluation!==3
+            }else return 'none'
         }))
         let theCompos = []
+        compos = compos.filter(compo=>compo!=='none')
         compos.map(subjectCompos=>subjectCompos.map(compo=>theCompos.push(compo)))
         return theCompos
     }
@@ -148,13 +154,15 @@ class Examen extends Component {
             let compoDate = compo.dateTime.split(' ')
             compoDate.pop()
             compoDate = compoDate[0]+' '+compoDate[1]+' '+compoDate[2]+' '+compoDate[3]
-            if(compoDate === new Date().toDateString()) return compo
+            if(compoDate === this.adjustGmtTime(1).toDateString()) return compo
+            else return 'none'
         })
+        compos = compos.filter(compo=>compo!=='none')
         return compos[0]===undefined?[]:compos
     }
 
     handleComposerClick=(e)=>{
-        this.setState({idEvaluation: e.target.id.split('_')[1]},()=>{
+        this.setState({idEvaluation: e.target.id.split('_')[1], composer:true},()=>{
             if(this.state.questionOrder.length===0){
                 let evaluation = this.props.evaluations.find(evaluatn=>evaluatn.idEvaluation===this.state.idEvaluation)
                 let questionOrder =[]
@@ -167,17 +175,35 @@ class Examen extends Component {
         })
     }
 
+    adjustGmtTime=(shift)=>{
+        let date=new Date().toUTCString()
+        date = date.split(' ')
+        let time = date[4].split(':')
+
+        let hour = Number(time[0])+shift
+        if(hour>24){
+            hour=hour/24
+            hour = hour-Math.floor(hour)
+            time[0] = Math.ceil(hour*24).toString()
+        }else time[0]=hour.toString()
+        time = `${time[0]}:${time[1]}:${time[2]}`
+        date[4] = time
+
+        let gmtTime = `${date[0]} ${date[1]} ${date[2]} ${date[3]} ${date[4]}`
+        return new Date(gmtTime)
+    }
+
     styleAllCompos=()=>{
         let compos = this.getDayCompos()
         return compos.map(compo=>{
             let nomCour= this.props.cours.find(cour=>cour.idCour===compo.idCour).nomCours
             let timeLeft = compo.dateTime.split(' ')[4]
-
-            let now = new Date()
+            
+            let now = this.adjustGmtTime(1)
             now = now+''.split(' G')[0]
             now = now.split(' ')[4]
             now = now.split(':')
-            now = '-'+now[0]+':'+'-'+now[1]
+            now = '-'+now[0]+':-'+now[1]
 
             let compoTime = compo.dateTime.split(' ')[4]
             compoTime = compoTime.split(':')
@@ -187,16 +213,17 @@ class Examen extends Component {
             //verify time left to compos
             if(checkCopie!==undefined){
                 timeLeft=<span className='late'>Vous avez deja remis votre epreuve</span>
-            }else if(new Date(compo.dateTime)>=new Date()){
+            }else if(new Date(compo.dateTime)>=this.adjustGmtTime(1)){
                 timeLeft = this.addTimes(now, compoTime)
-                let theSeconds = new Date()+''
+                let theSeconds = this.adjustGmtTime(1)+''
                 theSeconds = theSeconds.split(' G')[0]
                 theSeconds = theSeconds.split(' ')[4]
-                theSeconds = 60-Number(theSeconds.split(':')[2])
+                theSeconds = 59-Number(theSeconds.split(':')[2])
                 theSeconds = theSeconds<10? '0'+theSeconds:theSeconds
 
                 let theMinutes = 0
                 theMinutes = Number(timeLeft.split(':')[1])-1
+                theMinutes = theMinutes<0? 0:theMinutes
                 theMinutes = theMinutes<10?('0'+theMinutes):theMinutes
 
                 timeLeft = <div className='timeleft'>
@@ -262,12 +289,13 @@ class Examen extends Component {
             theTime=theTime[0]+':'+theTime[1]
             theTime = this.addTimes(theTime, evaluation.duree)
 
-            let now = new Date()
+            let now = this.adjustGmtTime(1)
             now = now+''.split(' G')[0]
             now = now.split(' ')[4]
             now = now.split(':')
-            let theSeconds = 60-Number(now[2])
-            now = '-'+now[0]+':'+'-'+now[1]
+            let theSeconds = 59-Number(now[2])
+            if(theSeconds<10)theSeconds='0'+theSeconds
+            now = '-'+now[0]+':-'+now[1]
 
             let composTimeLeft = this.addTimes(now, theTime)
 
@@ -323,21 +351,21 @@ class Examen extends Component {
         evaluation.questions.map(question=>{
             let questionProp = this.state.newPropositions.find(proposition=>proposition.index===question.index)
             let tempProps={}
-            console.log(this.props.typeQuestions,question)
             if(questionProp===undefined){
                 tempProps = {index:question.index, proposition:'', score:0}
                 finalPropositions.push(tempProps)
             }else{
-                let typeQuestion= this.props.typeQuestions.find(type=>type.idTypeQuestion==question.idTypeQuestion).nomTypeQuestion
+                // let typeQuestion= this.props.typeQuestions.find(type=>type.idTypeQuestion===question.idTypeQuestion).nomTypeQuestion
                 let tempScore = questionProp.proposition===question.answer?question.mark:0
-                if(typeQuestion==='QCM'){
-                    tempProps={...questionProp, score:tempScore}
-                    finalPropositions.push(tempProps)
-                }else {
-                    tempProps={...questionProp, score:tempScore}
-                    finalPropositions.push(tempProps)
-                }
+                tempProps={...questionProp, score:tempScore}
+                finalPropositions.push(tempProps)
+                // if(typeQuestion==='QCM'){
+                // }else {
+                //     tempProps={...questionProp, score:tempScore}
+                //     finalPropositions.push(tempProps)
+                // }
             }
+            return null
         })
 
         let toBeUploaded = {idEvaluation:this.state.idEvaluation, idEtudiant:this.state.idEtudiant, idTypeEvaluation:evaluation.idTypeEvaluation, propositions:finalPropositions, submitted: true, startDate: Date.now()}
@@ -393,7 +421,7 @@ class Examen extends Component {
                 <div id="loading-on">Loading</div>
             :
             <Hoc>
-                {this.styleAllCompos().length!==0?this.styleAllCompos():"Pas de Composition aujourd'hui"}
+                {this.styleAllCompos().length!==0?(this.state.composer?null:this.styleAllCompos()):"Pas de Composition aujourd'hui"}
                 {this.displayQuestions()} 
             </Hoc>
             }               

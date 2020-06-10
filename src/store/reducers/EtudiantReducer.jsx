@@ -7,7 +7,13 @@ const initState = {
 const etudiantReducer = (state = initState, action)=>{
     switch(action.type){
         case 'CREATE_ETUDIANT':
-            return{...state, etudiants:[...state.etudiants, ...action.payload]}
+            let stateData = [...state.etudiants]
+            if(stateData.length!==0){
+                if(action.payload.length===1) stateData=[...stateData, ...action.payload]
+                else stateData=[...action.payload]
+            } else stateData=[...action.payload]
+
+            return{...state, etudiants:[...stateData]}
         default:
             return state
     }

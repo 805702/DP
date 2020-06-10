@@ -6,6 +6,10 @@ import parseJwt from '../shared/utils/parseJwt.js'
 import './TeacherForum.css'
 import { connect } from 'react-redux'
 import TeacherNav from '../shared/UIElements/TeacherNav.jsx'
+import MicRecorder from 'mic-recorder-to-mp3';
+import ReactAudioPlayer from 'react-audio-player'
+const Mp3Recorder = new MicRecorder({ bitRate: 128 });
+
 
 class TeacherForum extends Component {
     state={
@@ -27,6 +31,12 @@ class TeacherForum extends Component {
         refFile:'',
         message:'',
         newSupport:'',
+
+        isRecording: false,
+        blobURL: '',
+        isBlocked: false,
+        seconds:0
+
     }
     
     fileTypeIcons = {
@@ -59,7 +69,7 @@ class TeacherForum extends Component {
 
     getForumChatDates=()=>{
         let forumMessages = this.getForumMessages()
-        console.log("Found Message",forumMessages)
+        // console.log("Found Message",forumMessages)
         let chatDates = []
 
         forumMessages.map(message=>{
@@ -93,7 +103,9 @@ class TeacherForum extends Component {
         //if its an image, then display the image in the img tag
         //else make the ref downloadable on click
         //adjust the return below to either be an image or a link that downloads a ref on Click
-        let refFile = !message.refFile?null:message.refFile.filetype.split('/').includes('image')?(<img src={"https://tranquil-thicket-81941.herokuapp.com/forum/file/"+message.refFile.link} alt='refFile' className='messageImage' />): <a href={"https://tranquil-thicket-81941.herokuapp.com/forum/file/"+message.refFile.link} download={message.refFile.name}>{message.refFile.name}</a>
+        let refFile = !message.refFile?null:message.refFile.filetype.split('/').includes('image')?(<img src={"https://tranquil-thicket-81941.herokuapp.com/forum/file/"+message.refFile.link} alt='refFile' className='messageImage' />)
+        :message.refFile.filetype.split('/').includes('audio')?<ReactAudioPlayer src={"https://tranquil-thicket-81941.herokuapp.com/forum/file/"+message.refFile.link} autoPlay={false} controls />
+        :<a href={"https://tranquil-thicket-81941.herokuapp.com/forum/file/"+message.refFile.link} download={message.refFile.name}>{message.refFile.name}</a>
         
         return (
             <div key={key} className={messageClassName+ ' message'}>
@@ -139,7 +151,26 @@ class TeacherForum extends Component {
         this.setState({message:e.target.value})
     }
 
-    handleSendMessage=async()=>{
+    adjustGmtTime=(shift)=>{
+        let date=new Date().toUTCString()
+        date = date.split(' ')
+        let time = date[4].split(':')
+
+        let hour = Number(time[0])+shift
+        if(hour>24){
+            hour=hour/24
+            hour = hour-Math.floor(hour)
+            time[0] = Math.ceil(hour*24).toString()
+        }else time[0]=hour.toString()
+        time = `${time[0]}:${time[1]}:${time[2]}`
+        date[4] = time
+
+        let gmtTime = `${date[0]} ${date[1]} ${date[2]} ${date[3]} ${date[4]}`
+        return new Date(gmtTime)
+    }
+
+    handleSendMessage=async(e)=>{
+        if(e!==undefined)e.preventDefault()
         if(this.state.refFile!=='' || this.state.message!==''){
             let ref = null;
             if(this.state.refFile){
@@ -152,9 +183,9 @@ class TeacherForum extends Component {
         if(data.error) return alert('Could not upload file')
         if (data.message) ref = data.message
         }
-            let date = new Date().toUTCString()
+            let date = this.adjustGmtTime(1)
             date = new Date(date).toDateString()
-            let dateTime = new Date().toUTCString()+' '
+            let dateTime = this.adjustGmtTime(1)+' '
             dateTime = dateTime.split(' G')[0]
             let newMessage = {date:date, dateTime:dateTime, isEnseignant:true, message:this.state.message, refFile:ref, idEtudiant:''}
             //In the forum collection, update the forum with id: this.state.idCours
@@ -180,19 +211,96 @@ class TeacherForum extends Component {
         };
         let Fd = new FormData();
         Fd.append('file',e.target.files[0])
-        this.setState({refFile: Fd})
+        console.log(e.target.files[0])
+        this.setState({refFile: Fd},()=>console.log(this.state.refFile===''))
     }
+
+    handleAttachBlob=(recordedBlob)=>{
+
+        let formData = new FormData();
+        formData.append("firstName", "John");
+        formData.append("image", recordedBlob, "image.png");
+        this.setState({refFile:formData},()=>this.handleSendMessage())
+    }
+
+    componentWillMount=()=>{
+        navigator.getUserMedia({ audio: true },
+          () => {
+            console.log('Permission Granted');
+            this.setState({ isBlocked: false });
+          },
+          () => {
+            console.log('Permission Denied');
+            this.setState({ isBlocked: true })
+          },
+        );
+      }
+  
+      start = () => {
+        if (this.state.isBlocked) {
+          console.log('Permission Denied');
+        } else {
+            this.setState({seconds:0})
+          Mp3Recorder
+            .start()
+            .then(() => {
+              this.setState({ isRecording: true });
+            }).catch((e) => console.error(e));
+        }
+      };
+
+      countDuration=()=>{
+          let minutes = Math.floor(this.state.seconds/60)
+          let seconds = this.state.seconds%60
+
+          return `${minutes}:${seconds<10?'0'+seconds:seconds}`
+      }
+  
+      stop = () => {
+        Mp3Recorder
+          .stop()
+          .getMp3()
+          .then(([buffer, blob]) => {
+            const blobURL = URL.createObjectURL(blob)
+            console.log(blob)
+
+            // let formData = new FormData();
+            // formData.append("firstName", "John");
+            // formData.append("image", blob, "vn.mp3");
+            let blb = blob
+            blb.blobURL=blobURL
+            blb.lastModified=Date.now()
+            blb.lastModifiedDate=this.adjustGmtTime(1)
+            blb.name=`vn${this.state.idPersonnel}${Date.now()}`
+            blb.webkitRelativePath=""
+            let uploadFile = new File([blb], blb.name+'.myvn', {type:"audio/mp3", lastModified:Date.now(), lastModifiedDate:this.adjustGmtTime(1),})
+
+            let Fd = new FormData();
+            Fd.append('file',uploadFile)
+    
+
+            console.log(uploadFile)
+            this.setState({refFile:Fd},()=>this.handleSendMessage())
+
+            this.setState({ isRecording: false });
+          }).catch((e) => console.log(e));
+      };
+  
 
     writeMessage=()=>(
         <div>
             <div className='newMessage'>
-                <input type='file' onChange={this.handleAttachFile} className='fa fa-paperclip'/>
+                {!this.state.isRecording?<input type='file' onChange={this.handleAttachFile} className='fa fa-paperclip'/>:null}
                 <form onSubmit={this.handleSendMessage}>
-                    <input type='text' className='newMessageInput' value={this.state.message} placeholder='Type your message' onChange={this.handleNewMessageChange} />
+                    {!this.state.isRecording?<input type='text' className='newMessageInput' value={this.state.message} placeholder='Type your message' onChange={this.handleNewMessageChange} />:<span className='newMessageInput'>{this.countDuration()}</span>}
                     <i className='fa fa-send' onClick={this.handleSendMessage} />
                 </form>
             </div>
-                <Link to='/teacher/timetable'>Voir emploi de temps</Link>
+            <div className="workingOnMic">
+                {!this.state.isRecording?<i className='fa fa-microphone greenMic' onClick={this.start} />:
+                <i className='fa fa-send greenMic greenSend' onClick={this.handleSendMessage} onClick={this.stop} />}
+            </div>
+            <Link to='/teacher/timetable'>Voir emploi de temps</Link>
         </div>
     )
 
@@ -200,7 +308,7 @@ class TeacherForum extends Component {
         let theCour = this.props.cours.find(cour=>cour.idCour===this.state.idCour)
         let classes = theCour.classe.map(classe=><span key={classe} className='nomClasseForum'>{(function(Classes){
             console.log(classe,Classes)
-            let Classe=Classes.find(cls=>cls.idClasse==classe)
+            let Classe=Classes.find(cls=>cls.idClasse===classe)
             if(!Classe)return "class not found"; 
             return Classe.filiere.nomFiliere +" "+ Classe.niveau
         })(this.props.classes)}</span>)
@@ -214,6 +322,7 @@ class TeacherForum extends Component {
 
     showSupportCours=()=>{
         let supports = this.props.cours.find(cour=>cour.idCour===this.state.idCour).refSupports
+        supports= supports!==undefined?supports:[]
         return (
             <div className="supportsCours">
                 {supports.map(support=>!support?null:(
@@ -239,7 +348,8 @@ class TeacherForum extends Component {
             this.state.newSupport
         )
         let coursObject=this.props.cours.find(cour=>cour.idCour===this.state.idCour)
-        let ref =coursObject.codeCours+'_'+(coursObject.refSupports.length+1)
+        console.log(coursObject)
+        let ref = coursObject.codeCours+'_'+coursObject.refSupports!==undefined?(coursObject.refSupports.length+1):1
         /*
             update the cours with idCour: this.state.idCour by adding newFormRef to its refSupport object
             add this.state.newSupport to the gridFS or i don't know what.
@@ -263,7 +373,7 @@ class TeacherForum extends Component {
         return (
             <div className='fileSupportCours'>
                 <input type='file' onChange={this.handleFileChange}/>
-                {this.state.newSupport!==''?(
+                {this.state.newSupport!=='' && this.state.newSupport!==undefined?(
                     <div className='newFileInfo'>
                         <span className='newFileName'>Nom fichier: {this.state.newSupport.name}</span>
                         <span className='newFileType'>Type fichier: {this.state.newSupport.type}</span>
@@ -275,6 +385,7 @@ class TeacherForum extends Component {
         )
     }
     componentDidMount(){
+        setInterval(() => {this.setState({ seconds: this.state.seconds+1 })}, 1000)
         fetch('https://tranquil-thicket-81941.herokuapp.com/teacher/forum', {
            method: 'get',
            headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")}

@@ -27,10 +27,15 @@ class TeacherTimetable extends Component {
     getToughtClassesTimetables=()=>{
       let tempObj=[] 
         let toughtClasses=this.getConnectedTeacher().toughtClasses
+        // console.log('tought classes: ', toughtClasses)
         toughtClasses.forEach(classe=>{
-          let tempClasse = this.props.timetable.find(timetable=>timetable.classe.idClasse == classe.idClasse)
-          if(tempClasse){
-              if(new Date(tempClasse.tableHeader.weekStart) === new Date(this.getMonday()))tempObj.push(tempClasse)
+            let tempClasse = this.props.timetable.find(timetable=>{
+                return timetable.classe.idClasse === classe.idClasse
+            })
+            if(tempClasse){
+                let tempClasseWeek = new Date(tempClasse.tableHeader.weekStart).toDateString()
+                // console.log(this.getWeekMonday(tempClasseWeek))
+                if(this.getWeekMonday(tempClasseWeek)===this.getMonday()) tempObj.push(tempClasse)
             }
         })
         return tempObj
@@ -38,7 +43,6 @@ class TeacherTimetable extends Component {
 
     getClassWeekSubjects=()=>{
         let timetables=this.getToughtClassesTimetables()
-
         let mappedTimetable = timetables.filter(timetable=>timetable!==undefined).map(timetable=>timetable.table.map(tableLine=>{
             let line=tableLine
             delete line.index
@@ -54,8 +58,8 @@ class TeacherTimetable extends Component {
         mappedTimetable.map(aClassTable=>aClassTable.filter(aclassLine=>{
             let index = 0;
             line++
-           aclassLine.map(elmt=>{
-                console.log(elmt)
+            aclassLine.map(elmt=>{
+                console.log(personnelData.idPersonnel, elmt.split('_')[1])
                if(elmt.split('_')[1]===personnelData.idPersonnel){
                    let classIndex=0
                    let theLine=0
@@ -100,12 +104,12 @@ class TeacherTimetable extends Component {
             })
             return null
         }))
-        console.log(hisTable,"hisTable")
+        // console.log(hisTable,"hisTable")
         return hisTable
         /*
-            output: ["IRT 3_1_mon_IDE_B03", "IRT 3_1_tue_IDE_", "IRT 3_2_mon_IDE_", "IRT 2_2_thur_IDE_"]
+            output: ["IRT 3_1_mon_IDE_B03_0012", "IRT 3_1_tue_IDE__0012", "IRT 3_2_mon_IDE__0012", "IRT 2_2_thur_IDE__0012"]
 
-            meaning: className_lineNumber_day_subject_salle
+            meaning: className_lineNumber_day_subject_salle_idCour
         */
     }
 
@@ -123,7 +127,6 @@ class TeacherTimetable extends Component {
             table[lineIndex][day].classe=weekSubject.split('_')[0]
             table[lineIndex][day].cour=weekSubject.split('_')[3]
             table[lineIndex][day].salle=weekSubject.split('_')[4]
-            console.log(this.props.cours)
             table[lineIndex][day].idCour=weekSubject.split('_')[length-1]
             return null
         })
@@ -136,6 +139,14 @@ class TeacherTimetable extends Component {
             today.setHours(-24*(today.getDay()-1))
             return today.toDateString()
         }else return today.toDateString()
+    }
+
+    getWeekMonday=(date)=>{
+        let theDate=new Date(date)
+        if(theDate.getDay()!==1){
+            theDate.setHours(-24*(theDate.getDay()-1))
+            return theDate.toDateString()
+        }else return theDate.toDateString()
     }
 
     getSunday=()=>{
@@ -161,13 +172,13 @@ class TeacherTimetable extends Component {
                 return line[day].cour.split('_')[0]===''?(
                 <div className='columnDay' key={line.index+day}>
                     <span className='day_cours' >{line[day].cour.split('_')[0]}</span>
-                    <span className='day_cours' >{line[day].cour.split('_')[2]}</span>
+                    <span className='day_cours' >{line[day].classe}</span>
                     <span className='day_cours' >{line[day].salle}</span>
                 </div>
                 ):(
                     <Link to={'/teacher/forum/'+line[day].idCour} className="columnDay" key={line.index+day}>
                         <span className='day_cours' >{line[day].cour.split('_')[0]}</span>
-                        <span className='day_cours' >{line[day].cour.split('_')[2]}</span>
+                        <span className='day_cours' >{line[day].classe}</span>
                         <span className='day_cours' >{line[day].salle}</span>
                     </Link>)}
             )}
@@ -175,7 +186,7 @@ class TeacherTimetable extends Component {
         ))
     }
  componentDidMount(){
-  console.log('passing here')
+//   console.log('Mounted')
         fetch('https://tranquil-thicket-81941.herokuapp.com/teacher/timetable', {
             method: 'get',
             headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")}
@@ -222,7 +233,7 @@ class TeacherTimetable extends Component {
     getTeacherSubjects=()=>{
         let cours = this.props.cours.filter(cour=>cour.nomEnseignant===this.state.idConnectedPersonnel)
         cours = cours.map(cour=> 
-                <Link to={'/teacher/forum/'+cour.idCour} className="aTeacherSubject">
+                <Link to={'/teacher/forum/'+cour.idCour} key={cour.idCour} className="aTeacherSubject">
                     <span>{cour.nomCours}</span>
                     <span className='gotoClass'>Ouvrer le cours</span>
                 </Link>
@@ -255,7 +266,7 @@ class TeacherTimetable extends Component {
     }
 
     render() {
-       console.log(this.props,this.state)
+    //    console.log(this.props,this.state)
         return (
             <div>
                 {parseJwt(window.localStorage.getItem('token')).user.role==='coordonateur'?<CoordoNav />:<TeacherNav />}

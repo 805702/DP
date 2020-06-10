@@ -1,0 +1,28 @@
+.dataDiv .fa-check-circle,
+.dataDiv .fa-times-circle,
+.dataDiv .fa-exclamation-triangle {
+    border: none;
+    margin: 0;
+    padding: 0;
+    width: fit-content;
+    font-size: 8rem;
+    color: green;
+    justify-self: center;
+}
+
+.dataDiv .fa-times-circle,
+.dataDiv .fa-exclamation-triangle {
+    color: red;
+}
+
+.okBtn {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid white;
+    background-color: blue;
+    color: white;
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    font-weight: bolder;
+}

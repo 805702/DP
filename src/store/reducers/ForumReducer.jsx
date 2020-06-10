@@ -14,9 +14,21 @@ const initState = {
 const forumReducer = (state = initState, action)=>{
     switch(action.type){
         case 'CREATE_FORUM':
-            return{...state, forums:[...state.forums, ...action.payload]}
+            let stateData = [...state.forums]
+            if(stateData.length!==0){
+                if(action.payload.length===1) stateData=[...stateData, ...action.payload]
+                else stateData=[...action.payload]
+            } else stateData=[...action.payload]
+
+            return{...state, forums:[...stateData]}
         case 'LOAD_FORUM':
-            return{...state, forums:[...action.payload]}
+            let stateDatas = [...state.forums]
+            if(stateDatas.length!==0){
+                if(action.payload.length===1) stateDatas=[...stateDatas, ...action.payload]
+                else stateDatas=[...action.payload]
+            } else stateDatas=[...action.payload]
+
+            return{...state, forums:[...stateDatas]}
         case 'UPDATE_FORUM':
             return{...state, forums:state.forums.map(forum=>forum.idForum===action.payload.idForum?action.payload:forum)}
         default:

@@ -6,10 +6,17 @@ const initState = {
     ]
 }
 
-const courReducer = (state = initState, action)=>{
+const courReducer = (state=initState, action)=>{
     switch(action.type){
         case 'LOAD_COUR':
-            return{...state, cours:[...action.payload]}       
+            let stateData = [...state.cours]
+            console.log(state, state.cours)
+            action.payload.map(cour=>{
+                if(stateData.find(course=>course.idCour===cour.idCour)===undefined) stateData=[...stateData, cour]
+                return null
+            })
+
+            return{...state, cours:[...stateData]}       
         case 'UPDATE_COUR':
         	let index;
         	for (var i = 0; i < action.payload.length; i++) {

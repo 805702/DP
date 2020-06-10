@@ -1,11 +1,14 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import io from 'socket.io-client'
-import { Link } from 'react-router-dom'
+
+import './StudentForum.css'
 import Hoc from '../shared/utils/hoc.js'
 import parseJwt from '../shared/utils/parseJwt.js'
-import './StudentForum.css'
-import { connect } from 'react-redux'
 import StudentNav from '../shared/UIElements/StudentNav.jsx'
+import MicRecorder from 'mic-recorder-to-mp3';
+import ReactAudioPlayer from 'react-audio-player'
+const Mp3Recorder = new MicRecorder({ bitRate: 128 });
 
 class StudentForum extends Component {
     state={
@@ -13,6 +16,12 @@ class StudentForum extends Component {
         idCour:this.props.match.params.idCour,
         message:'',
         refFile:'',
+        stop:false,
+
+        isRecording: false,
+        blobURL: '',
+        isBlocked: false,
+        seconds:0
     }
 
     fileTypeIcons = {
@@ -81,7 +90,9 @@ class StudentForum extends Component {
         //if its an image, then display the image in the img tag
         //else make the ref downloadable on click
         //adjust the return below to either be an image or a link that downloads a ref on Click
-        let refFile = !message.refFile?null:message.refFile.filetype.split('/').includes('image')?(<img src={"https://tranquil-thicket-81941.herokuapp.com/forum/file/"+message.refFile.link} alt='refFile' className='messageImage' />): <a href={"https://tranquil-thicket-81941.herokuapp.com/forum/file/"+message.refFile.link} download={message.refFile.name}>{message.refFile.name}</a>
+        let refFile = !message.refFile?null:message.refFile.filetype.split('/').includes('image')?(<img src={"https://tranquil-thicket-81941.herokuapp.com/forum/file/"+message.refFile.link} alt='refFile' className='messageImage' />)
+        :message.refFile.filetype.split('/').includes('audio')?<ReactAudioPlayer src={"https://tranquil-thicket-81941.herokuapp.com/forum/file/"+message.refFile.link} autoPlay={false} controls />
+        :<a href={"https://tranquil-thicket-81941.herokuapp.com/forum/file/"+message.refFile.link} download={message.refFile.name}>{message.refFile.name}</a>
         return (
             <div key={key} className={messageClassName+ ' message'}>
                 <span className='messageSender'>{nomSender}</span>
@@ -96,7 +107,7 @@ class StudentForum extends Component {
         let chatDates = this.getForumChatDates()
         let messages = this.getForumMessages()
         let key=0
-        return chatDates.map(chatDate=>{
+        let globalMessages = chatDates.map(chatDate=>{
             let dateMessages = messages.filter(message=>message.date===chatDate).sort((a,b)=>{
                 let c=new Date(a.dateTime)
                 let d = new Date(b.dateTime)
@@ -115,14 +126,36 @@ class StudentForum extends Component {
                 </div>
             )
         })
+        
+        return <div className="forumMessagesPer" id='forumMessagesPer'>
+            {globalMessages}
+        </div>
     }
 
     handleNewMessageChange=(e)=>{
         this.setState({message:e.target.value})
     }
 
+    adjustGmtTime=(shift)=>{
+        let date=new Date().toUTCString()
+        date = date.split(' ')
+        let time = date[4].split(':')
+
+        let hour = Number(time[0])+shift
+        if(hour>24){
+            hour=hour/24
+            hour = hour-Math.floor(hour)
+            time[0] = Math.ceil(hour*24).toString()
+        }else time[0]=hour.toString()
+        time = `${time[0]}:${time[1]}:${time[2]}`
+        date[4] = time
+
+        let gmtTime = `${date[0]} ${date[1]} ${date[2]} ${date[3]} ${date[4]}`
+        return new Date(gmtTime)
+    }
+
     handleSendMessage=async(e)=>{
-        e.preventDefault()
+        if(e!==undefined)e.preventDefault()
         if(this.state.refFile!=='' || this.state.message!==''){
             let ref = null;
             if(this.state.refFile){
@@ -135,9 +168,11 @@ class StudentForum extends Component {
                 if(data.error) return alert('Could not upload file')
                 if (data.message) ref = data.message
             }
-            let date = new Date().toUTCString()
+            let date = this.adjustGmtTime(1)
+            // let date = new Date().toUTCString()
             date = new Date(date).toDateString()
-            let dateTime = new Date().toUTCString()+' '
+            let dateTime = this.adjustGmtTime(1)+' '
+            // let dateTime = new Date().toUTCString()+' '
             dateTime = dateTime.split(' G')[0]
             let newMessage = {date:date, dateTime:dateTime, isEnseignant:false, message:this.state.message, refFile:ref, idEtudiant:this.state.idEtudiant}
             //In the forum collection, update the forum with id: this.state.idCours
@@ -183,15 +218,98 @@ class StudentForum extends Component {
         </div>
     )
 
+    componentWillMount=()=>{
+        navigator.getUserMedia({ audio: true },
+          () => {
+            console.log('Permission Granted');
+            this.setState({ isBlocked: false });
+          },
+          () => {
+            console.log('Permission Denied');
+            this.setState({ isBlocked: true })
+          },
+        );
+      }
+  
+      start = () => {
+        if (this.state.isBlocked) {
+          console.log('Permission Denied');
+        } else {
+            this.setState({seconds:0})
+          Mp3Recorder
+            .start()
+            .then(() => {
+              this.setState({ isRecording: true });
+            }).catch((e) => console.error(e));
+        }
+      };
+
+      countDuration=()=>{
+          let minutes = Math.floor(this.state.seconds/60)
+          let seconds = this.state.seconds%60
+
+          return `${minutes}:${seconds<10?'0'+seconds:seconds}`
+      }
+  
+      stop = () => {
+        Mp3Recorder
+          .stop()
+          .getMp3()
+          .then(([buffer, blob]) => {
+            const blobURL = URL.createObjectURL(blob)
+            console.log(blob)
+
+            // let formData = new FormData();
+            // formData.append("firstName", "John");
+            // formData.append("image", blob, "vn.mp3");
+            let blb = blob
+            blb.blobURL=blobURL
+            blb.lastModified=Date.now()
+            blb.lastModifiedDate=this.adjustGmtTime(1)
+            blb.name=`vn${this.state.idEtudiant}${Date.now()}`
+            blb.webkitRelativePath=""
+            let uploadFile = new File([blb], blb.name+'.myvn', {type:"audio/mp3", lastModified:Date.now(), lastModifiedDate:this.adjustGmtTime(1),})
+
+            let Fd = new FormData();
+            Fd.append('file',uploadFile)
+    
+
+            console.log(uploadFile)
+            this.setState({refFile:Fd},()=>this.handleSendMessage())
+
+            this.setState({ isRecording: false });
+          }).catch((e) => console.log(e));
+      };
+
+
+    writeMessage=()=>(
+        <div>
+            <div className='newMessage'>
+                {!this.state.isRecording?<input type='file' onChange={this.handleAttachFile} className='fa fa-paperclip'/>:null}
+                <form onSubmit={this.handleSendMessage}>
+                    {!this.state.isRecording?<input type='text' className='newMessageInput' value={this.state.message} placeholder='Type your message' onChange={this.handleNewMessageChange} />
+                    :<span className='newMessageInput'>{this.countDuration()}</span>}
+                    <i className='fa fa-send' onClick={this.handleSendMessage} />
+                </form>
+            </div>
+            <div className="workingOnMic">
+                {!this.state.isRecording?<i className='fa fa-microphone greenMic' onClick={this.start} />:
+                <i className='fa fa-send greenMic greenSend' onClick={this.handleSendMessage} onClick={this.stop} />}
+            </div>
+        </div>
+    )
+
+
     showSupportCours=()=>{
         let supports = this.props.cours.find(cour=>cour.idCour===this.state.idCour).refSupports
+        supports = supports!==undefined?supports:[]
         return (
             <div className="supportsCours">
                 {supports.map(support=>(
                     <div className='support' key={support.ref}>
                         <i className={'fa fa-'+(this.fileTypeIcons[support.nameFile.split('.')[support.nameFile.split('.').length-1]] || 'file' )+'-o'} />
                         <span className='nomSupport'>{support.nameFile}</span>
-                        <a href={`http://localhost:3001/forum/file/${support.link}`} download={support.nameFile}><i className='fa fa-download' /></a>
+                        <a href={`https://tranquil-thicket-81941.herokuapp.com/forum/file/${support.link}`} download={support.nameFile}><i className='fa fa-download' /></a>
                     </div>
                 ))}
             </div>
@@ -216,7 +334,19 @@ class StudentForum extends Component {
             </div>
         )
     }
+
+    scrollToTop=()=>{
+        let elmt = document.getElementById('forumMessagesPer')
+        if(elmt!==null){
+            elmt.scrollIntoView({ behavior: 'smooth' })
+            elmt.scrollTop=elmt.scrollHeight
+        }
+        this.setState({stop:true})
+        // console.log(elmt.scrollIntoView)
+    }
+
     componentDidMount(){
+        setInterval(() => {this.setState({ seconds: this.state.seconds+1 })}, 1000)
         fetch('https://tranquil-thicket-81941.herokuapp.com/teacher/forum', {
            method: 'get',
            headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")}
@@ -298,6 +428,7 @@ class StudentForum extends Component {
                 this.props.dispatch({type: "UPDATE_COUR_FORUM", payload: updatedCour})
                     // this.scrollToBottom()
         });
+
     }
 
     render() {
@@ -311,9 +442,7 @@ class StudentForum extends Component {
                         <div className="forumBottomSection">
                             <div className="forumMessageSection">
                                 <span className='messagesSection'>Forum de cours</span>
-                                <div className="forumMessagesPer">
-                                    {this.displayForumMessagesPerDatePerTime()}
-                                </div>
+                                {this.displayForumMessagesPerDatePerTime()}
                                 <div className="forumWriteNewMessage">
                                     {this.writeMessage()}
                                 </div>

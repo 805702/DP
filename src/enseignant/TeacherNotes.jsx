@@ -16,6 +16,7 @@ class TeacherNotes extends Component {
         idClasse:'',
         typeEvaluation:'',
         noteAction:'',
+        createNote:true,
         editableNote:{idNote:'', idEtudiant:'', idCour:'', notes:{
             CC:{note:'', published:false},
             Examen:{note:'', published:false},
@@ -147,6 +148,40 @@ class TeacherNotes extends Component {
     getStudentSubjectNotes=()=>{
         if(this.state.idClasse!==''){
             let students = this.props.etudiants.filter(etudiant=>etudiant.idClasse===this.state.idClasse)
+            let noNotes = []
+            let workingId=0
+            students.map(student=>{
+                if(this.props.notes.find(note=>note.idEtudiant===student.idEtudiant && note.idCour===this.state.idCour)===undefined){
+                    let newNote = {
+                        idNote: this.props.notes.length+(workingId++),
+                        idCour: this.state.idCour,
+                        idEtudiant:student.idEtudiant,
+                        notes:{CC:{note:"N/A", published:false}, Examen:{note:"N/A", published:false}, Rattrapage:{note:"N/A", published:false}}
+                    }
+                    noNotes=[...noNotes, newNote]
+                }
+            })
+
+            console.log(noNotes)
+            /*
+                Create the notes of noNotes in the bd then load the data back on the frontend
+                this way, all students have notes for the subject if the student did not write the test (online) his mark will be zero.
+                but then, the teacher can also change the student's mark if the test wasn't written online.
+                so beg Angelo to adjust that
+            */
+        //    noNotes.map(note=>{
+        //        fetch('https://tranquil-thicket-81941.herokuapp.com/teacher/notes/teacher-notes', {
+        //            method: 'get',
+        //            headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")}
+        //         })
+        //         .then(response=>response.json())
+        //         .then(data=>{console.log(data)})
+        //     })
+            // if(this.state.createNote){
+            //     this.props.dispatch({type:'CREATE_NOTE', payload:noNotes})
+            //     this.setState({createNote:false})
+            // }
+
             return students.map(student=>this.props.notes.find(note=>note.idEtudiant===student.idEtudiant && note.idCour===this.state.idCour))
         }else return null
     }
@@ -258,7 +293,8 @@ class TeacherNotes extends Component {
                         {this.personnelSubjectSelect()}
                         {this.subjectClassesSelect()}
                         {this.typeEvaluationSelect()}
-                    </div>                {this.showActionBtns()}
+                    </div>
+                    {this.showActionBtns()}
                     {this.displayNotes()}
                 </Hoc>
                 }

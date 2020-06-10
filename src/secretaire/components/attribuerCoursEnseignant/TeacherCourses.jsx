@@ -3,6 +3,11 @@ import React, { Component } from 'react'
 import './TeacherCourses.css'
 import { connect } from 'react-redux'
 import SecretaireNav from '../../../shared/UIElements/SecretaireNav'
+import Spinner from '../../../shared/alerts/Spinner';
+import BadAlert from '../../../shared/alerts/BadAlert';
+import GoodAlert from '../../../shared/alerts/GoodAlert';
+import JustAlert from '../../../shared/alerts/JustAlert';
+
 
 class TeacherCourses extends Component {
     state={
@@ -43,6 +48,7 @@ class TeacherCourses extends Component {
             */
             let teacherId = this.state.actualTeacher;
             let codeCour = this.state.actualSubject.split(" ")[0];
+            this.setState({spin:true, spinMessage:"Nous changeons l'enseignant"})
               fetch(`https://tranquil-thicket-81941.herokuapp.com/coordo/teacher-courses/update-cour`, {
                          method: 'put',
                          headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")},
@@ -55,12 +61,42 @@ class TeacherCourses extends Component {
                 .then(data=>{
                     if(data.message){
                         this.props.dispatch({type: "UPDATE_A_COUR",payload:{codeCour,teacherId}})
-                        alert("You've changed the teacher of the subject with subject code: "+this.state.actualSubject+' to: '+this.state.actualTeacher)
+                        this.setState({
+                            spin:false,
+                            alertCounter:0,
+                            spinMessage:"Operation reussi",
+                            gAlert:'good',
+                        })
+                        // alert("You've changed the teacher of the subject with subject code: "+this.state.actualSubject+' to: '+this.state.actualTeacher)
                         this.setState({actualSubject:''})
+                    }else{
+                        this.setState({
+                            spin:false,
+                            alertCounter:0,
+                            spinMessage:"Nous n'avons pas pu changer l'enseignant",
+                            gAlert:'bad',
+                        })
+                        console.log(data)
                     }
-                    console.log(data)
                 })
-        }else alert('Choose a classe, then subject then assign a teacher to that subject')
+                .catch(error=>{
+                    this.setState({
+                        spin:false,
+                        alertCounter:0,
+                        spinMessage:"INTERNAL SERVER ERROR",
+                        gAlert:'just',
+                    })
+                    console.log(error)
+                })
+        }else {
+            this.setState({
+                spin:false,
+                alertCounter:0,
+                spinMessage:"Choissisez une classe, cours puis l'enseignant de ce cours",
+                gAlert:'just',
+            })
+            // alert('Choose a classe, then subject then assign a teacher to that subject')
+        }
     }
 
     displayMiddlePart=()=>{
@@ -82,7 +118,7 @@ class TeacherCourses extends Component {
                     <option hidden>Choisissez l'enseignant</option>
                     {this.getTeachers()}
                 </select>
-                <input type='button' value='Ajouter' onClick={this.handleClick} />
+                <input type='button' value='Attribuer' onClick={this.handleClick} />
             </div>
         )
     }
@@ -167,6 +203,10 @@ class TeacherCourses extends Component {
             {this.displayBottomHeader()}
             <div className='teacherCourseModuleData'>
                 <div className='teacherCourseModuleName'>{this.state.theModule}</div>
+                <Spinner spin={this.state.spin} message={this.state.spinMessage}/>
+                {this.state.gAlert?<BadAlert message={this.state.spinMessage} alertCounter={this.state.alertCounter} setCounter={this.setAlertCounter} gAlertSetter={this.setGAlertFalse} spin={this.state.gAlert} message={this.state.spinMessage} />:null}
+                {this.state.gAlert?<GoodAlert message={this.state.spinMessage} alertCounter={this.state.alertCounter} setCounter={this.setAlertCounter} gAlertSetter={this.setGAlertFalse} spin={this.state.gAlert} message={this.state.spinMessage} />:null}
+                {this.state.gAlert?<JustAlert message={this.state.spinMessage} alertCounter={this.state.alertCounter} setCounter={this.setAlertCounter} gAlertSetter={this.setGAlertFalse} spin={this.state.gAlert} message={this.state.spinMessage} />:null}
                 <div className="teacherCourseModuleCourseHeader">
                     <span className='moduleCourseHeaderData'>No</span>
                     <span className='moduleCourseHeaderData'>Code matiere</span>
@@ -200,6 +240,15 @@ class TeacherCourses extends Component {
             </div>
         </div>
     }
+    
+    setGAlertFalse=()=>{
+        this.setState({gAlert:false})
+    }
+  
+    setAlertCounter=()=>{
+        this.setState({alertCounter:this.state.alertCounter+1})
+    }
+
     componentDidMount(){
         console.log(this.props)
        fetch('https://tranquil-thicket-81941.herokuapp.com/coordo/teacher-courses/users-courses-modules-faculties-classes', {
@@ -273,6 +322,7 @@ class TeacherCourses extends Component {
         return (
             <div>
                 <SecretaireNav />
+                <div className="TitleSettingPage">ATTRIBUTION DE COURS</div>
                 {this.displayMiddlePart()}
                 {this.displayBottomPart()}
             </div>

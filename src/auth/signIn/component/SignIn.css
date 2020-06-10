@@ -1,14 +1,14 @@
 .signInForm {
-    margin-top: 80px;
+    margin-top: 12%;
     display: grid;
     justify-content: center;
 }
 
 .signInForm .signInInput {
-    padding: 10px 3px;
+    padding: 10px 0px 10px 0px;
     width: 400px;
     text-align: start;
-    margin-left: 5px;
+    margin-left: 10px;
 }
 
 @media(max-width:415px) {
@@ -34,25 +34,34 @@
     border: none;
     justify-self: center;
     margin-top: 50px;
-    padding: 10px;
+    padding: 13px;
     border-radius: 5px;
-    width: 130px;
+    width: 43%;
     background-color: #28A08B;
     color: white;
     font-weight: bold;
     font-size: 1.1rem;
     cursor: pointer;
+    opacity: 0.95;
+    transition: ease-in 0.1s;
+}
+
+.signInConfirm:hover {
+    box-shadow: 0px 0px 5px #28A08B;
+    transition: ease-in 0.1s;
+    opacity: 1;
 }
 
 .toSignUp {
     justify-self: center;
     font-size: 0.90rem;
+    margin-top: 10px;
 }
 
 .signInFgtPwd {
     justify-self: end;
     font-size: .75rem;
-    margin-top: -10px;
+    margin-top: -3px;
 }
 
 a {
@@ -60,10 +69,23 @@ a {
     text-decoration: none;
 }
 
+.signInForm a:hover {
+    text-decoration: underline;
+}
+
 .signInForm .fa {
-    padding: 6px;
-    /* padding-left: 6px; */
-    border: 1px solid black;
-    margin-bottom: 10px;
+    padding: 4px 15px 4px 15px;
+    border: 1px solid rgb(219, 219, 219);
+    margin-bottom: 15px;
     border-radius: 10px;
+    font-size: 20px;
+    transition: linear .2s;
+    color: rgb(100, 100, 100);
+    box-shadow: 0px 0px 1px gray;
+}
+
+.signInForm .fa:hover {
+    border: 1px solid #3157A0;
+    transition: linear .2s;
+    box-shadow: 0px 0px 2px #3157A0;
 }

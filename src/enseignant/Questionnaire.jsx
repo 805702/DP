@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import Hoc from '../shared/utils/hoc.js'
 import parseJwt from '../shared/utils/parseJwt.js'
 import getClassNameFromId from '../shared/utils/getClassNameFromId'
 
@@ -452,7 +451,7 @@ class Questionnaire extends Component {
                             </div>
                         ):null
                     }
-                    <input type='number' id={index+'_markInput'} value={question.mark} placeholder='/pts' min={0} max={20} onChange={(e) => this.handleMarkChange(e)} />
+                    <input type='number' id={index+'_markInput'} value={question.mark===0?'':question.mark} placeholder='/pts' min={0} max={20} onChange={(e) => this.handleMarkChange(e)} />
                 </div>
             })
 

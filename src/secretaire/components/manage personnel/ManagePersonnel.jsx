@@ -3,6 +3,10 @@ import { connect }  from 'react-redux';
 import SecretaireNav from '../../../shared/UIElements/SecretaireNav'
 
 import './ManagePersonnel.css';
+import Spinner from '../../../shared/alerts/Spinner';
+import BadAlert from '../../../shared/alerts/BadAlert';
+import GoodAlert from '../../../shared/alerts/GoodAlert';
+import JustAlert from '../../../shared/alerts/JustAlert';
 
 
 class ManagePersonnel extends Component {
@@ -13,7 +17,16 @@ class ManagePersonnel extends Component {
         newPersonnelCoordoClass:'',
         newPersonnel:{matricule:'', nom:'', prenom:'', mail:'', tel:'', role:''},
         openNewPersonnel:false,
+        spin:false,
+        gAlert:false,
+        alertCounter:0,
+        spinMessage:''
     }
+
+    /*
+        1. verify the email and phone that they respect the format before sending them to backend
+        2. show alert messages of actions that are done (globally... write two components Alert and Message for both cases)
+    */
 
     sortPersonnelWRTRoleAndName=()=>this.props.personnels.sort((a,b)=>(a.role>b.role)?1:(a.role===b.role)?((a.nom>b.nom)?1:(a.nom===b.nom)?((a.prenom>b.prenom)?1:-1):-1):-1)
 
@@ -27,6 +40,7 @@ class ManagePersonnel extends Component {
             2. fetch the personnel collection from the database and load the personnel part of redux
         */
         let Perso = this.props.personnels.find(personnel=>personnel.matricule===personnelMatricule)
+        this.setState({spin:true, spinMessage:"Nous supprimons un membre du personnel"})
         fetch(`https://tranquil-thicket-81941.herokuapp.com/manage-personnel/${Perso.idPersonnel}/delete`, {
             method: 'delete',
             headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")}
@@ -36,13 +50,32 @@ class ManagePersonnel extends Component {
             console.log(data.message)
             if(data.message){
               this.props.dispatch({type: "DELETE_PERSONNEL", payload: personnelMatricule})
+              this.setState({
+                spin:false,
+                alertCounter:0,
+                spinMessage:`Suppression du personnel ${personnelMatricule} faite avec success`,
+                gAlert:'good',
+                })
             }
             else{
               console.log(data)
+              this.setState({
+                spin:false,
+                alertCounter:0,
+                spinMessage:`Echec de suppression`,
+                gAlert:'bad',
+            })
             }
           })
-          .catch(error=>console.log(error))     
-        alert('deleted personnel with matricule: '+personnelMatricule)
+          .catch(error=>{
+              this.setState({
+                  spin:false,
+                  alertCounter:0,
+                  spinMessage:`INTERNAL SERVER ERROR`,
+                  gAlert:'just',
+                })
+              console.log(error)
+            })
     }
 
     handleEditChange=(e)=>{
@@ -69,6 +102,7 @@ class ManagePersonnel extends Component {
     }
 
     handleEditSave=(e)=>{
+        console.log(e.target.id)
         console.log(this.state.editableObject)
         let updatedPersonnel = this.state.editableObject
         if(this.state.editableObject.mail!=='' && this.state.editableObject.tel!=='' && this.state.role!==''){
@@ -85,31 +119,51 @@ class ManagePersonnel extends Component {
                     Both should be created in a transaction (the update and the creation of the new coordo)
                     After having updated these field, fetch the personnel data back to the redux state so the interface can refresh
                 */
-                 fetch(`https://tranquil-thicket-81941.herokuapp.com/manage-personnel/${this.state.editableObject.idPersonnel}/update`, {
-                         method: 'put',
-                         headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")},
-                         body: JSON.stringify({
-                            matricule:this.state.editableObject.matricule,
-                            nom:this.state.editableObject.nom,
-                            prenom:this.state.editableObject.prenom,
-                            email: this.state.editableObject.mail.toLowerCase(),
-                            tel:this.state.editableObject.tel,
-                            role:this.state.editableObject.role,
-                            classe:coordoUploadObject.classes.map(classe=>classe.idClasse)
-                         })
-                       })
+                this.setState({spin:true, spinMessage:"Nous modifions le coordonateur"})
+                fetch(`https://tranquil-thicket-81941.herokuapp.com/manage-personnel/${this.state.editableObject.idPersonnel}/update`, {
+                        method: 'put',
+                        headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")},
+                        body: JSON.stringify({
+                        matricule:this.state.editableObject.matricule,
+                        nom:this.state.editableObject.nom,
+                        prenom:this.state.editableObject.prenom,
+                        email: this.state.editableObject.mail.toLowerCase(),
+                        tel:this.state.editableObject.tel,
+                        role:this.state.editableObject.role,
+                        classe:coordoUploadObject.classes.map(classe=>classe.idClasse)
+                        })
+                    })
                        .then(response=>response.json())
                        .then(data=>{
                          if(data.message){
-                             alert('Saved the Changes made to the personnel/Coordo with matricule: '+e.target.id)
-                             console.log(data.message,updatedPersonnel)
+                            console.log(data.message,updatedPersonnel)
                             this.props.dispatch({type: "UPDATE_PERSONNEL", payload: updatedPersonnel})
+                            this.setState({
+                                spin:false,
+                                alertCounter:0,
+                                spinMessage:`Modification du personnel ${updatedPersonnel.matricule}  faite avec success`,
+                                gAlert:'good',
+                            })
                          }
                          else{
+                            this.setState({
+                                spin:false,
+                                alertCounter:0,
+                                spinMessage:`Echec de modification`,
+                                gAlert:'bad',
+                            })
                            console.log(data)
                          }
                        })
-                       .catch(error=>console.log(error)) 
+                       .catch(error=>{
+                        this.setState({
+                            spin:false,
+                            alertCounter:0,
+                            spinMessage:`INTERNAL SERVER ERROR`,
+                            gAlert:'just',
+                        })
+                           console.log(error)
+                        })
             }else if(this.state.editableObject.role==='coordonateur' && this.state.newCoordoClass==='')alert('Invalid filiere.\nhoose a filiere and for the newly created coordo')
             else{
                 /*
@@ -118,7 +172,7 @@ class ManagePersonnel extends Component {
 
                     After having updated these field, fetch the personnel data back to the redux state so the interface can refresh
                 */
-
+                    this.setState({spin:true, spinMessage:"Nous modifions le personnel"})
                     fetch(`https://tranquil-thicket-81941.herokuapp.com/manage-personnel/${this.state.editableObject.idPersonnel}/update`, {
                          method: 'put',
                          headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")},
@@ -134,15 +188,34 @@ class ManagePersonnel extends Component {
                        .then(response=>response.json())
                        .then(data=>{
                          if(data.message){
-                             console.log(data.message,updatedPersonnel)
-                            alert('Saved the Changes made to the personnel with matricule: '+e.target.id)
+                            console.log(data.message,updatedPersonnel)
                             this.props.dispatch({type: "UPDATE_PERSONNEL", payload: updatedPersonnel})
+                            this.setState({
+                                spin:false,
+                                alertCounter:0,
+                                spinMessage:`Modification du personnel ${updatedPersonnel.matricule}  faite avec success`,
+                                gAlert:'good',
+                            })
                          }
                          else{
+                            this.setState({
+                                spin:false,
+                                alertCounter:0,
+                                spinMessage:`Echec de modification`,
+                                gAlert:'bad',
+                            })
                            console.log(data)
                          }
                        })
-                       .catch(error=>console.log(error)) 
+                       .catch(error=>{
+                        this.setState({
+                            spin:false,
+                            alertCounter:0,
+                            spinMessage:`INTERNAL SERVER ERROR`,
+                            gAlert:'just',
+                        })
+                           console.log(error)
+                        }) 
             }
 
             this.handleEditCancel()
@@ -168,8 +241,8 @@ class ManagePersonnel extends Component {
                 <span className='managePersonnelTel'>{personnel.tel}</span>
                 <span className='managePersonnelRole'>{personnel.role}</span>
                 <div className="personnelActionBtns">
-                    <input type='button' value='Edit' id={personnel.matricule} onClick={this.handlePersonnelEdit} className='managePersonnelActionBtnEdit' />
-                    <input type='button' value='Delete' onClick={()=>this.handlePersonnelDelete(personnel.matricule)} className='managePersonnelActionBtnDelete' />
+                    <input type='button' value='Editer' id={personnel.matricule} onClick={this.handlePersonnelEdit} className='managePersonnelActionBtnEdit' />
+                    <input type='button' value='Suppr...' onClick={()=>this.handlePersonnelDelete(personnel.matricule)} className='managePersonnelActionBtnDelete' />
                 </div>
             </div>
             ):(
@@ -180,14 +253,14 @@ class ManagePersonnel extends Component {
                 <span className='managePersonnelPrenom'>{personnel.prenom}</span>
                 <input type='email' className='managePersonnelEditable' id='managePersonnelMail' value={this.state.editableObject.mail} onChange={this.handleEditChange} />
                 <input type='text' className='managePersonnelEditable' id='managePersonnelTel' value={this.state.editableObject.tel} onChange={this.handleEditChange} />
-                <select id='managePersonnelRole' onChange={this.handleEditChange}>
+                {this.state.editableObject.role!=='secretaire'?<select id='managePersonnelRole' onChange={this.handleEditChange}>
                     <option value='' hidden>Choissisez le role</option>
                     {this.props.roles.map(role=>{
                         if(role.nomRole!=='secretaire'){
-                            return <option key={role.nomRole}>{role.nomRole}</option>
+                            return <option selected={this.state.editableObject.role===role.nomRole} key={role.nomRole}>{role.nomRole}</option>
                         }return null
                     })}
-                </select>
+                </select>:<span className='managePersonnelRole'>Secretaire</span>}
                 {this.state.editableObject.role==='coordonateur'?(
                     <select id='newCoordoClass' onChange={this.handleEditChange}>
                         <option hidden value=''>Choissisez la filiere</option>
@@ -242,63 +315,91 @@ class ManagePersonnel extends Component {
         }
     }
 
+    setGAlertFalse=()=>{
+        this.setState({gAlert:false})
+    }
+  
+    setAlertCounter=()=>{
+        this.setState({alertCounter:this.state.alertCounter+1})
+    }
+  
     handleCreerClick=(e)=>{
         e.preventDefault()
         console.log(this.state.newPersonnel)
         if(this.state.newPersonnel.matricule!=='' && this.state.newPersonnel.nom!=='' && this.state.newPersonnel.prenom!=='' && this.state.newPersonnel.mail!=='' && this.state.newPersonnel.tel!=='' && this.state.newPersonnel.role!==''){
           if(this.state.newPersonnel.role==='coordonateur' && this.state.newPersonnelCoordoClass!==''){
-              
             let coordoClasses = this.props.classes.filter(classe=>classe.filiere.nomFiliere===this.state.newPersonnelCoordoClass)
             let coordoUploadObject={matriculePersonnel:this.state.newPersonnel.matricule, classes:coordoClasses}
-             fetch('https://tranquil-thicket-81941.herokuapp.com/manage-personnel/new', {
-                         method: 'post',
-                         headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")},
-                         body: JSON.stringify({
-                            matricule:this.state.newPersonnel.matricule,
-                            nom:this.state.newPersonnel.nom,
-                            prenom:this.state.newPersonnel.prenom,
-                            email: this.state.newPersonnel.mail.toLowerCase(),
-                            tel:this.state.newPersonnel.tel,
-                            role:this.state.newPersonnel.role,
-                            startDate: Date.now(),
-                            classes: coordoUploadObject.classes.map(classe=>classe.idClasse)
-                         })
-                       })
-                       .then(response=>response.json())
-                       .then(data=>{
-                         if(data.message){
-                             console.log(data.message)
-                             let user = data.message
-                             const Personnel = {
-                                idPersonnel:user._id,
-                                matricule: user.matricule,
-                                nom: user.nom,
-                                prenom: user.prenom,
-                                mail: user.email,
-                                tel: user.tel,
-                                role: user.role
-                            }
-                             this.props.dispatch({type: "LOAD_PERSONNEL", payload: [Personnel]})
-                         }
-                         else{
-                           console.log(data)
-                         }
-                       })
-                       .catch(error=>console.log(error)) 
-           console.log(this.state.newPersonnel)
-           console.log(coordoUploadObject)
-           this.setState({openNewPersonnel:false, newPersonnel:{matricule:'', nom:'', prenom:'', mail:'', tel:'', role:''}, newPersonnelCoordoClass:''})
-        }
-        else if(this.state.newPersonnel.role==='coordonateur' && this.state.newPersonnelCoordoClass===''){alert('Choisir une classe pour le nouveau coordonateur')}
-        else{
-            /*
-            The object to be created in the personnel collection is: this.state.newPersonnel
-            */
-
+            this.setState({spin:true, spinMessage:"Nous creeons le coordonateur"})
             fetch('https://tranquil-thicket-81941.herokuapp.com/manage-personnel/new', {
-                         method: 'post',
-                         headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")},
-                         body: JSON.stringify({
+                method: 'post',
+                headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")},
+                body: JSON.stringify({
+                    matricule:this.state.newPersonnel.matricule,
+                    nom:this.state.newPersonnel.nom,
+                    prenom:this.state.newPersonnel.prenom,
+                    email: this.state.newPersonnel.mail.toLowerCase(),
+                    tel:this.state.newPersonnel.tel,
+                    role:this.state.newPersonnel.role,
+                    startDate: Date.now(),
+                    classes: coordoUploadObject.classes.map(classe=>classe.idClasse)
+                })
+            })
+            .then(response=>response.json())
+            .then(data=>{
+                if(data.message){
+                console.log(data.message)
+                let user = data.message
+                const Personnel = {
+                    idPersonnel:user._id,
+                    matricule: user.matricule,
+                    nom: user.nom,
+                    prenom: user.prenom,
+                    mail: user.email,
+                    tel: user.tel,
+                    role: user.role
+                }
+                this.props.dispatch({type: "LOAD_PERSONNEL", payload: [Personnel]})
+                this.setState({
+                    spin:false,
+                    alertCounter:0,
+                    spinMessage:"Success de l'operation",
+                    gAlert:'good',
+                  })
+  
+            }
+                else{
+                    console.log(data)
+                    this.setState({
+                        spin:false,
+                        alertCounter:0,
+                        spinMessage:'Echec',
+                        gAlert:'bad',
+                    })
+      
+                }
+            })
+                .catch(error=>console.log(error)) 
+                console.log(this.state.newPersonnel)
+                console.log(coordoUploadObject)
+                this.setState({openNewPersonnel:false, newPersonnel:{matricule:'', nom:'', prenom:'', mail:'', tel:'', role:''}, newPersonnelCoordoClass:''})
+                }else if(this.state.newPersonnel.role==='coordonateur' && this.state.newPersonnelCoordoClass===''){
+                    this.setState({
+                        spin:false,
+                        alertCounter:0,
+                        spinMessage:'Erreur... Choisir une classe pour le coordonateur',
+                        gAlert:'just',
+                    })        
+                }
+                else{
+                    /*
+                    The object to be created in the personnel collection is: this.state.newPersonnel
+                    */
+                   this.setState({spin:true, spinMessage:"Nous creeons le personnel"})
+                    fetch('https://tranquil-thicket-81941.herokuapp.com/manage-personnel/new', {
+                        method: 'post',
+                        headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")},
+                        body: JSON.stringify({
                             matricule:this.state.newPersonnel.matricule,
                             nom:this.state.newPersonnel.nom,
                             prenom:this.state.newPersonnel.prenom,
@@ -306,33 +407,60 @@ class ManagePersonnel extends Component {
                             tel:this.state.newPersonnel.tel,
                             role:this.state.newPersonnel.role,
                             startDate: Date.now()
-                         })
-                       })
-                       .then(response=>response.json())
-                       .then(data=>{
-                         if(data.message){
-                             console.log(data.message)
-                             let user = data.message
-                             const Personnel = {
-                                idPersonnel:user._id,
-                                matricule: user.matricule,
-                                nom: user.nom,
-                                prenom: user.prenom,
-                                mail: user.email,
-                                tel: user.tel,
-                                role: user.role
-                            }
-                             this.props.dispatch({type: "LOAD_PERSONNEL", payload: [Personnel]})
-                         }
-                         else{
-                           console.log(data)
-                         }
-                       })
-                        .catch(error=>console.log(error)) 
-           console.log(this.state.newPersonnel)
-           this.setState({openNewPersonnel:false, newPersonnel:{matricule:'', nom:'', prenom:'', mail:'', tel:'', role:''}, newPersonnelCoordoClass:''})
-        }
-       }else{ alert('Enter all the data to create a coordo.\nDetected presence of some empty fields.')}
+                        })
+                    })
+                    .then(response=>response.json())
+                    .then(data=>{
+                        if(data.message){
+                            console.log(data.message)
+                            let user = data.message
+                            const Personnel = {
+                            idPersonnel:user._id,
+                            matricule: user.matricule,
+                            nom: user.nom,
+                            prenom: user.prenom,
+                            mail: user.email,
+                            tel: user.tel,
+                            role: user.role
+                        }
+                        this.props.dispatch({type: "LOAD_PERSONNEL", payload: [Personnel]})
+                        this.setState({
+                            spin:false,
+                            alertCounter:0,
+                            spinMessage:"Success de l'operation",
+                            gAlert:'good',
+                        })
+        
+                    }else{
+                        console.log(data)
+                        this.setState({
+                            spin:false,
+                            alertCounter:0,
+                            spinMessage:'Echec',
+                            gAlert:'bad',
+                        })    
+                    }
+                })
+                .catch(error=>{
+                    this.setState({
+                        spin:false,
+                        alertCounter:0,
+                        spinMessage:'INTERNAL SERVER ERROR',
+                        gAlert:'just',
+                    }) 
+                    console.log(error)
+                }) 
+                console.log(this.state.newPersonnel)
+                this.setState({openNewPersonnel:false, newPersonnel:{matricule:'', nom:'', prenom:'', mail:'', tel:'', role:''}, newPersonnelCoordoClass:''})
+                }
+            }else{
+                this.setState({
+                    spin:false,
+                    alertCounter:0,
+                    spinMessage:'Erreur... Remplir tout les champs puis essayer a nouveau',
+                    gAlert:'just',
+                })    
+            }
     }
 
     handleCreerCancel=()=>{
@@ -342,7 +470,7 @@ class ManagePersonnel extends Component {
     enableCreation=(e)=>{
         if(this.state.openNewPersonnel===false){
             this.setState({openNewPersonnel:true})
-        }else alert('finish creating the current element or cancel the creation')
+        }else alert('Termine avec la creation en cours ou annuler celui-ci.')
     }
 
     addNewPersonnel=()=>{
@@ -382,6 +510,10 @@ class ManagePersonnel extends Component {
                     </div>
                 </form>):null}
                 <div className="newPersonnelOpening" onClick={this.enableCreation}>
+                    <Spinner spin={this.state.spin} message={this.state.spinMessage}/>
+                    {this.state.gAlert?<BadAlert message={this.state.spinMessage} alertCounter={this.state.alertCounter} setCounter={this.setAlertCounter} gAlertSetter={this.setGAlertFalse} spin={this.state.gAlert} message={this.state.spinMessage} />:null}
+                    {this.state.gAlert?<GoodAlert message={this.state.spinMessage} alertCounter={this.state.alertCounter} setCounter={this.setAlertCounter} gAlertSetter={this.setGAlertFalse} spin={this.state.gAlert} message={this.state.spinMessage} />:null}
+                    {this.state.gAlert?<JustAlert message={this.state.spinMessage} alertCounter={this.state.alertCounter} setCounter={this.setAlertCounter} gAlertSetter={this.setGAlertFalse} spin={this.state.gAlert} message={this.state.spinMessage} />:null}
                     <i className='fa fa-plus-circle' id='enableCreateNewPersonnel' />
                     {/* <span className='newPersonnelPhrase'>Nouveau personnel</span> */}
                 </div>

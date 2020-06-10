@@ -1,9 +1,16 @@
 .attribuerCours {
-    display: grid;
+    display: flex;
     justify-content: center;
     padding: 10px;
+    background-color: rgba(0, 0, 0, 0.395);
 }
 
+.attribuerCours *
+{
+    margin-left: 5px;
+    /* border: 1px solid white; */
+    /* background-color: rgba(0, 0, 0, 0.8); */
+}
 .teacherCourseBottomDisplay {
     display: grid;
 }
@@ -51,6 +58,7 @@
 .teacherCourseModuleCourse {
     display: grid;
     grid-template-columns: 50px 150px 1fr 150px 1fr 1fr;
+    padding: 7px 0px 7px 0px;
 }
 
 .teacherCourseModuleCourse:nth-of-type(odd) {

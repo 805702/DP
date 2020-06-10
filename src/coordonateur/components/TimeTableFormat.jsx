@@ -29,16 +29,20 @@ class TimeTableFormat extends Component {
 
     findClassFaculty=()=>this.props.faculties.find(faculty=>{
         return faculty.filieres.find(filiere=>filiere.nomFiliere===this.state.theClasse.split(' ')[0])
-    })._id
+    })
+    // ._id
 
     getSalleCours=()=>{
         let classeFaculty=this.findClassFaculty()
-        return this.props.batiments.filter(batiment=>batiment.idFaculty===classeFaculty).map(batiment=>(
-            <optgroup key={batiment.nomBatiment} label={batiment.nomBatiment}>
-                {batiment.salles.map(salle=><option key={salle.nomSalle}>{salle.nomSalle}</option>)}
-            </optgroup>
-        ))
+        console.log(classeFaculty)
+        return 'hello world'
+        // return this.props.batiments.filter(batiment=>batiment.idFaculty===classeFaculty).map(batiment=>(
+        //     <optgroup key={batiment.nomBatiment} label={batiment.nomBatiment}>
+        //         {batiment.salles.map(salle=><option key={salle.nomSalle}>{salle.nomSalle}</option>)}
+        //     </optgroup>
+        // ))
     }
+
     memoGetNameFromId = () =>{
         let nameId = {id:null, name:null};
         return (id)=>
@@ -51,9 +55,17 @@ class TimeTableFormat extends Component {
             return nameId.name
         }
     }
+
+    getPersonnelName=(idPersonnel)=>{
+        let personnel = this.props.personnels.find(perso=>perso.idPersonnel===idPersonnel)
+        return personnel===undefined?'':personnel.nom
+        // return 'Ndzi'
+    }
+
     getNameFromId = (id) =>{let memo = this.memoGetNameFromId(); return memo(id)}
-    getClasseCours=()=>this.props.cours.filter(cour=>cour.classe.includes(this.state.theClasse.split(' ')[2])).sort((a,b)=>(a.nomCours>b.nomCours)?1:-1).map(cour=>{
-        return <option key={cour.codeCours} value={cour.nomCours+'_'+cour.nomEnseignant+'_'+this.getNameFromId(cour.nomEnseignant)}>{cour.nomCours+'_'+this.getNameFromId(cour.nomEnseignant)}</option>
+    getClasseCours=()=>this.props.cours.filter(cour=>cour.classe.includes(this.state.theClasse.split(' ')[this.state.theClasse.split(' ').length-1])).sort((a,b)=>(a.nomCours>b.nomCours)?1:-1).map(cour=>{
+        console.log(cour)
+        return <option key={cour.codeCours} value={cour.nomCours+'_'+cour.nomEnseignant+'_'+this.getPersonnelName(cour.nomEnseignant)}>{cour.nomCours+'_'+this.getPersonnelName(cour.nomEnseignant)}</option>
     })
 
     handleLineDataChange=(lineNumber, e)=>{
@@ -160,7 +172,9 @@ class TimeTableFormat extends Component {
         this.setState({Table:tempTable})
     }
 
-    showLines=()=>this.state.Table.map(line=><TimeTableLine lineNumber={this.handleLineDataChange} line={line} cours={this.getClasseCours()} salles={this.getSalleCours()} key={line.index}/>)
+    showLines=()=>this.state.Table.map(line=>{
+        return <TimeTableLine lineNumber={this.handleLineDataChange} line={line} cours={this.getClasseCours()} salles={this.getSalleCours()} key={line.index}/>
+    })
 
     getCoordoObject=()=>this.props.coordonateurs.find(coordonateur=>coordonateur.matriculePersonnel===this.state.matriculeCoordo)
     convertCoordoClasses=(obj)=>obj.classes.map(Oclasse=>this.props.classes.find(Cclasse=>Cclasse.idClasse===Oclasse))
@@ -168,7 +182,7 @@ class TimeTableFormat extends Component {
 
     handleModifyEmtpy=()=>{this.setState({tableHeader:this.definirTable.tableHeader, Table:this.definirTable.table})}
 
-    getClasseTimetable=()=>this.getCoordoObject().timetables.find(timetable=>timetable.classe===this.state.theClasse.split(' ')[2])
+    getClasseTimetable=()=>this.getCoordoObject().timetables.find(timetable=>timetable.classe===this.state.theClasse.split(' ')[this.state.theClasse.split(' ').length-1])
 
     handleModifierClick=(e)=>{
         this.setState({theClasse:e.target.id.split('_')[0]+' '+e.target.id.split('_')[1]+' '+e.target.id.split('_')[2]},()=>{

@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import Hoc from '../../shared/utils/hoc.js'
 import parseJwt from '../../shared/utils/parseJwt.js'
 import './PublierNoteExamen.css'
+import '../../enseignant/SharedCoordoEnseignant.css'
 import CoordoNav from '../../shared/UIElements/CoordoNav.jsx'
 
 class PublierNoteExamen extends Component {
@@ -26,10 +27,12 @@ class PublierNoteExamen extends Component {
     displayClasseSelect=()=>{
         let classes = this.getClassesObjects()
         return (
-            <select className='publierNoteChooseClasse' id='idClasse' onChange={this.handleSelectChange}>
-                <option value='' hidden>Choisissez une classe</option>
-                {classes.map(classe=><option key={classe.idClasse} value={classe.idClasse}>{classe.filiere.nomFiliere+' '+classe.niveau}</option>)}
-            </select>
+            <div className="displayClasseSelectHolder">
+                <select className='publierNoteChooseClasse' id='idClasse' onChange={this.handleSelectChange}>
+                    <option value='' hidden>Choisissez une classe</option>
+                    {classes.map(classe=><option key={classe.idClasse} value={classe.idClasse}>{classe.filiere.nomFiliere+' '+classe.niveau}</option>)}
+                </select>
+            </div>
         )
     }
     
@@ -91,7 +94,7 @@ class PublierNoteExamen extends Component {
                     ):(
                         <div className="moduleSubjectState" key={subject.idCour}>
                             <span>{subject.nomCours}</span>
-                            <span>Non disponible</span>
+                            <span style ={{color:'red'}}>Non disponible</span>
                         </div>
                     )
                 })

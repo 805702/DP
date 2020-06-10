@@ -48,6 +48,19 @@
     border-bottom: 2px solid black;
 }
 
+.greenMic {
+    color: white;
+    background-color: rgba(0, 128, 0, 0.719);
+    padding: 7px 10px;
+    margin: 0 3px;
+    font-size: 1.5rem;
+    border-radius: 70%;
+}
+
+.greenSend {
+    padding: 6px;
+}
+
 .nomForumCour,
 .concernedClassesForum {
     font-weight: 600;

@@ -52,19 +52,18 @@
 .timeTableTab {
     justify-self: center;
     font-weight: bolder;
-    color: white;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-gap: 5px;
+    background-color: rgba(0, 0, 0, 0.395);
+    width: 100%;
+    padding: 10px;
 }
 
 .timeTableTab .tabElement {
-    padding: 10px;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    background-color: turquoise;
+    padding: 8px;
+    /* border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px; */
+    background-color: rgb(47, 190, 176);
 }
 
 .activeTab {
-    background-color: red !important;
+    background-color: rgb(190,0, 0) !important;
 }

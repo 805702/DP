@@ -1,0 +1,82 @@
+.classeName {
+    justify-self: center;
+    font-size: 1.4rem;
+    font-weight: bolder;
+    color: #3157A0;
+    padding: 2px 0;
+    border: 1px solid grey;
+    width: 80%;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.classEffectif {
+    justify-self: center;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.displayStudentsSelect {
+    width: fit-content;
+    font-size: 1.2rem;
+    background-color: rgba(0, 0, 0, 0.397);
+    border: 1px solid black;
+    color: white;
+    justify-self: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.displayStudentsSelectHolder {
+    display: grid;
+    grid-auto-flow: column;
+    grid-gap: 10px;
+    justify-content: center;
+    background-color: grey;
+    margin-top: 5px;
+}
+
+.classeStudentList {
+    display: grid;
+    margin-top: 20px;
+}
+
+.classList {
+    display: grid;
+    width: 80%;
+    text-align: center;
+    justify-self: center;
+    padding: 2px 0;
+    height: 67vh;
+    border: 1px solid black;
+    align-content: flex-start;
+    border-radius: 10px;
+    overflow-y: scroll;
+}
+
+.classList::-webkit-scrollbar {
+    display: none;
+}
+
+.unEtudiant {
+    display: grid;
+    margin: 0 5px;
+    font-weight: 600;
+    color: white;
+    grid-template-columns: 50px 70px repeat(4, 1fr);
+    padding-bottom: 2px;
+}
+
+.unEtudiant:last-of-type {
+    padding-bottom: 0;
+}
+
+.unEtudiant span:nth-of-type(odd) {
+    background-color: green;
+}
+
+.unEtudiant span:nth-of-type(even) {
+    background-color: black;
+    color: white;
+}

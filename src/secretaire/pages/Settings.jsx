@@ -9,6 +9,7 @@ export default function Settings() {
     return (
         <div>
             <SecretaireNav />
+            <div className="TitleSettingPage"> GESTION DES FACULTES </div>
             <div className="settingsPartialHolder">
                 <ClasseSettings />
                 <NewFaculte />

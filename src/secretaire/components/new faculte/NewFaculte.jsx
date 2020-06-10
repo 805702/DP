@@ -1,5 +1,10 @@
 import React, {Component} from "react"
 import { connect } from "react-redux";
+import Spinner from '../../../shared/alerts/Spinner';
+import BadAlert from '../../../shared/alerts/BadAlert';
+import GoodAlert from '../../../shared/alerts/GoodAlert';
+import JustAlert from '../../../shared/alerts/JustAlert';
+
 
 import "./newfaculte.css"
 import NewMatiere from "./NewMatiere";
@@ -50,6 +55,7 @@ class NewFaculte extends Component
 	
 	handleDeleteFaculty=(facultyIndex)=>{
 		console.log(facultyIndex,this.props.facultes[facultyIndex-1])
+		this.setState({spin:true, spinMessage:"Nous supprimons la faculte"})
 		fetch(`https://tranquil-thicket-81941.herokuapp.com/faculty/${this.props.facultes[facultyIndex-1]._id}/delete`, {
             method: 'delete',
             headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")}
@@ -58,13 +64,34 @@ class NewFaculte extends Component
           .then(data=>{
           	console.log(data.message)
             if(data.message){
-							this.props.dispatch({type: "DELETE_FACULTY", payload: facultyIndex})
+				this.props.dispatch({type: "DELETE_FACULTY", payload: facultyIndex})
+				this.setState({
+					spin:false,
+					alertCounter:0,
+					spinMessage:`Suppression de la faculte ${facultyIndex} faite avec success`,
+					gAlert:'good',
+				})	
             }
             else{
-              console.log(data)
+			  console.log(data)
+			  this.setState({
+                spin:false,
+                alertCounter:0,
+                spinMessage:`Echec de suppression`,
+                gAlert:'bad',
+                })
+
             }
           })
-          .catch(error=>console.log(error))			
+          .catch(error=>{
+			this.setState({
+                spin:false,
+                alertCounter:0,
+                spinMessage:`INTERNAL SERVER ERROR`,
+                gAlert:'just',
+			})
+			  console.log(error)
+			})
 		//facultyIndex is the index of the faculty to be deleted.
 		//this function is meant for deleting that faculty from the database. so delete this faculty
 	}
@@ -98,6 +125,29 @@ class NewFaculte extends Component
 
 	}
 	
+	loadClasses=async ()=>{
+		let classes = await fetch('https://tranquil-thicket-81941.herokuapp.com/classe/', {
+			method: 'get',
+			headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")}
+			})
+		.then(response=>response.json())
+		
+		console.log(classes)
+		if(!classes.message) throw Error("Couldn't retrieve classes"); 
+		classes.message = classes.message.map(classe=> {
+			return {
+				idClasse:classe._id, 
+				filiere:{
+					nomFiliere:classe.nomClasse, 
+					idFiliere: classe.idFiliere
+				}, 
+				niveau:classe.niveau
+			}
+		})
+		
+		this.props.dispatch({type: "LOAD_CLASSE", payload: classes.message})
+	}
+	
 	handleCreateClick=()=>{
 		if(this.state.nomFaculte !== '' && this.state.filieres.length!==0)
 		{
@@ -105,6 +155,7 @@ class NewFaculte extends Component
 			//this is the data to be uploaded
 			// uploadData is the faculty to be created... verify that the data in it coincides with the data to be uploaded then upload. without which please try to complete it as it should be.
 			let newFilieres = this.state.filieres.map(filiere=>{ return{nomFiliere: filiere.nomFiliere, maxNiveau: filiere.niveauMax, startDate: Date.now()}})
+			this.setState({spin:true, spinMessage:"Nous creeons la faculte"})
 			fetch('https://tranquil-thicket-81941.herokuapp.com/faculty/new', {
             method: 'post',
             headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")},
@@ -118,22 +169,45 @@ class NewFaculte extends Component
           .then(response=>response.json())
           .then(data=>{
             if(data.message){
-							let uploadData={nomFaculte:this.state.nomFaculte, filieres:this.state.filieres, index:this.props.facultes.length+1, _id: data.message}
-              this.setState({
-							showTop:true,
-							filieres:[],
-							nomFaculte:''
-							}, async ()=>{
-								await this.props.dispatch({type:"CREATE_FACULTY", payload: [uploadData]})
-								console.log(this.props.facultes)
-							})
+				let uploadData={nomFaculte:this.state.nomFaculte, filieres:this.state.filieres, index:this.props.facultes.length+1, _id: data.message}
+              	this.setState({
+					showTop:true,
+					filieres:[],
+					nomFaculte:''
+					}, async ()=>{
+						await this.props.dispatch({type:"CREATE_FACULTY", payload: [uploadData]})
+						this.setState({
+                            spin:false,
+                            alertCounter:0,
+                            spinMessage:"Faculte cree avec success",
+                            gAlert:'good',
+                        })
+						// this.loadClasses()						
+						console.log(this.props.facultes)
+				})
             }
             else{
-              console.log(data)
+				console.log(data)
+				this.setState({
+					spin:false,
+					alertCounter:0,
+					spinMessage:"Echec de creation de faculte",
+					gAlert:'bad',
+				})
             }
           })
-          .catch(error=>console.log(error))			
-		}else{alert('Empty faculty name or no filieres')}
+          .catch(error=>{
+			  console.log(error)
+			  this.setState({
+				spin:false,
+				alertCounter:0,
+				spinMessage:"INTERNAL SERVER ERROR",
+				gAlert:'just',
+			})
+		})
+		}else{
+			alert('Nom de faculté vide ou pas de filières')
+		}
 	}
 
 
@@ -223,11 +297,25 @@ class NewFaculte extends Component
           })
           .catch(error=>console.log(error.message))		
 	}
+
+	setGAlertFalse=()=>{
+        this.setState({gAlert:false})
+    }
+  
+    setAlertCounter=()=>{
+        this.setState({alertCounter:this.state.alertCounter+1})
+    }
+
 	render()
 	{
 		return(
 			<section className = "container">
 				<span className='blockTitle'>ADMINISTRATION DES FACULTES</span>
+				<Spinner spin={this.state.spin} message={this.state.spinMessage}/>
+                {this.state.gAlert?<BadAlert message={this.state.spinMessage} alertCounter={this.state.alertCounter} setCounter={this.setAlertCounter} gAlertSetter={this.setGAlertFalse} spin={this.state.gAlert} message={this.state.spinMessage} />:null}
+                {this.state.gAlert?<GoodAlert message={this.state.spinMessage} alertCounter={this.state.alertCounter} setCounter={this.setAlertCounter} gAlertSetter={this.setGAlertFalse} spin={this.state.gAlert} message={this.state.spinMessage} />:null}
+                {this.state.gAlert?<JustAlert message={this.state.spinMessage} alertCounter={this.state.alertCounter} setCounter={this.setAlertCounter} gAlertSetter={this.setGAlertFalse} spin={this.state.gAlert} message={this.state.spinMessage} />:null}
+
 				<div>
 					{this.props.facultes.length!==0?<ComponentDeroulement facultes={this.props.facultes} handleDeleteFaculty={this.handleDeleteFaculty} />:null}
 					<div className = "header" onClick = {this.displayAndHiddenContent}>

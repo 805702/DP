@@ -18,14 +18,6 @@ export default class ClasseDefinir extends Component {
         document.getElementById(element).type='text'
     }
 
-    handlePlusClick=(e)=>{
-        let Date={fromDate:this.state.fromDate, toDate:this.state.toDate}
-        let Time={fromTime:this.state.fromTime, toTime:this.state.toTime}
-        let data={date:Date, time:Time}
-        //upload data with the function you'll receive from props
-        // this.props.uploadData(data)
-    }
-
     render() {
         return (
             <div className='ClasseDefinir'>

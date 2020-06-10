@@ -30,7 +30,13 @@
 
 .personnel span:nth-child(odd) {
     background-color: grey;
-    padding: 2px;
+}
+
+.personnel span
+{
+    word-wrap: break-word;
+    text-align: center;
+    padding: 3px 0px 3px 0px;
 }
 
 .personnelActionBtns {

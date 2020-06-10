@@ -20,6 +20,7 @@
     padding: 10px;
 }
 
+
 .studentNav .theLinks {
     justify-self: end;
 }
@@ -38,8 +39,28 @@
     border-radius: 10px;
     margin-left: 5px;
 }
+.theLinks *
+{
+    background-color: #3157A0;
+    transition:background ease-out .2s;
+}
+.theLinks *:hover
+{
+    background-color: rgb(0, 0, 100);
+    transition:background ease-in .1s;
+}
 
-.signout {
+.theLinks *:active
+{
+    background-color: rgb(0, 0, 50);
+}
+
+.signout:hover
+{
+    background-color: rgb(190, 0, 0);
+}
+
+.signout{
     background-color: red;
 }
 

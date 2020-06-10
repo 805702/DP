@@ -31,7 +31,7 @@ class CorrigerExamen extends Component {
     displayTeacherSubjects=()=>{
         if(this.state.idCour==='' && this.state.evalType===''){
             let cours = this.props.cours.filter(cour=>cour.nomEnseignant === this.state.idPersonnel)
-            return cours.map(cour=>{
+            return cours.length!==0?cours.map(cour=>{
                 //on clicking a type evaluation, it is supposed to send up the id of the subject, and the id of typeEvaluation
                 return <div key={cour.idCour} className="corrigerSubject">
                     <span>{cour.nomCours}</span>
@@ -39,7 +39,7 @@ class CorrigerExamen extends Component {
                         {this.props.typeEvaluations.map(evalType=><span key={evalType.idTypeEvaluation} className='evalType' onClick={this.handleTypeEvalClick} id={'evalType_'+cour.idCour+'_'+evalType.idTypeEvaluation}>{evalType.nomTypeEvaluation}</span>)}
                     </div>
                 </div>
-            })
+            }):<span className='noCourses'>Vous n'avez pas de cours</span>
         }else return null
     }
 
@@ -58,7 +58,7 @@ class CorrigerExamen extends Component {
                 theEvaluation = devoirList.map(devoir=>{
                     let cour = this.props.cours.find(cour=>cour.idCour===devoir.idCour)
                     let classes = cour.classe.map((classe,i)=><span key={i} className='composClassCorriger'>{(function(Classes){
-                                    let Classe=Classes.find(cls=>cls.idClasse==classe)
+                                    let Classe=Classes.find(cls=>cls.idClasse===classe)
                                     console.log(Classes)
                                     if(!Classe)return "class not found"; 
                                     return Classe.filiere.nomFiliere +" "+ Classe.niveau
@@ -93,7 +93,7 @@ class CorrigerExamen extends Component {
                 theEvaluation = evalList.map(evaln=>{
                     let cour = this.props.cours.find(cour=>cour.idCour===evaln.idCour)
                     let classes = cour.classe.map(classe=><span key={classe} className='composClassCorriger'>{(function(Classes){
-                                    let Classe=Classes.find(cls=>cls.idClasse==classe)
+                                    let Classe=Classes.find(cls=>cls.idClasse===classe)
                                     console.log(Classes)
                                     if(!Classe)return "class not found"; 
                                     return Classe.filiere.nomFiliere +" "+ Classe.niveau+', '
@@ -105,12 +105,12 @@ class CorrigerExamen extends Component {
                     </div>
                 })
             }
-
+            console.log(theEvaluation)
             return (
                 <div className="theEvaluation">
                     <i className='fa fa-arrow-left bak' onClick={this.goBackToChooseSubjectEvalType} />
                     <div className="concernedSubjectEvaluationOverallHolder">
-                        {theEvaluation}
+                        {theEvaluation.length!==0?theEvaluation:<span>Pas d'epreuve a corriger</span>}
                     </div>
                 </div>
             )
@@ -324,10 +324,10 @@ class CorrigerExamen extends Component {
                 return this.props.etudiants.filter(etudiant=>etudiant.idClasse === idClasse)
             })
 
-            let nbrOfStuds = 0
+            // let nbrOfStuds = 0
             let index=0
             let classEffectif = students.map(student=>{
-                nbrOfStuds+=student.length
+                // nbrOfStuds+=student.length
                 let tempEffectif = {idClasse:classes[index], effectif:student.length}
                 index+=1
                 return tempEffectif
@@ -508,7 +508,7 @@ class CorrigerExamen extends Component {
             let subject = this.props.cours.find(cour=>cour.idCour===questionPaper.idCour)
             let typeEval = this.props.typeEvaluations.find(tpe=>tpe.idTypeEvaluation===this.state.evalType).nomTypeEvaluation
             let subjectClasses = subject.classe.map(aClass=><span key={aClass} className='correctedPaperHeaderClasse'>{' '+(function(Classes){
-                                    let Classe=Classes.find(cls=>cls.idClasse==aClass)
+                                    let Classe=Classes.find(cls=>cls.idClasse===aClass)
                                                 if(!Classe)return "class not found"; 
                                     return Classe.filiere.nomFiliere +" "+ Classe.niveau
                                 })(this.props.classes)}</span>)
@@ -540,7 +540,7 @@ class CorrigerExamen extends Component {
                                 <span className='questionPaperQuestion'>Q: {question.question}</span>
                                 <span className='questionProposition'>R: {studProposition.proposition}</span>
                                 <div className="inputMark">
-                                    {question.idTypeQuestion==2?<input className='givenScore' type="number" min={0} max={question.mark} value={studProposition.score} step={0.01} id={'question_'+question.index} onChange={this.handleInputQuestionMark}/>:
+                                    {question.idTypeQuestion===2?<input className='givenScore' type="number" min={0} max={question.mark} value={studProposition.score} step={0.01} id={'question_'+question.index} onChange={this.handleInputQuestionMark}/>:
                                     <span className='givenScore' >{studProposition.score}</span>}
                                     <span className='slash'>/{question.mark}</span>
                                 </div>

@@ -6,6 +6,11 @@
     margin: 0;
     padding: 0;
 }
+.container
+{
+    margin-left: 1%;
+    width: 99%;
+}
 
 .CDcontainer {
     display: flex;

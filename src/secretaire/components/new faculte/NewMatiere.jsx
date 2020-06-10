@@ -18,7 +18,7 @@ export default class NewMatiere extends Component {
                 <input type='text' value={this.props.filiereEdit.nomFiliere} onChange={(e)=>this.props.handleEditChange(e)} className='editInput' id='EditInput' />
                 <h2>{filiere.niveauMax}</h2>
                 <input type='submit' value='Save' onClick={(e)=>this.props.handleEditSave(e)} className='newFilierSubmit1'/>
-                <input type='submit' value='Delete' onClick={(e)=>this.props.handleDelete(e)} id={filiere.index} className='newFilierSubmit'/>
+                <input type='submit' value='Supprimer' onClick={(e)=>this.props.handleDelete(e)} id={filiere.index} className='newFilierSubmit'/>
             </div>
             ):(
             <div className="StyledFiliere" key={filiere.index}>
@@ -26,7 +26,7 @@ export default class NewMatiere extends Component {
                 <h2>{filiere.nomFiliere}</h2>
                 <h2>{filiere.niveauMax}</h2>
                 <input type='submit' value='Editer' onClick={(e)=>this.props.handleEditBtn(e)} id={filiere.index} className='newFilierSubmit1'/>
-                <input type='submit' value='Delete' onClick={(e)=>this.props.handleDelete(e)} id={filiere.index} className='newFilierSubmit'/>
+                <input type='submit' value='Supprimer' onClick={(e)=>this.props.handleDelete(e)} id={filiere.index} className='newFilierSubmit'/>
             </div>
             )
                 

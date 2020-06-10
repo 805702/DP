@@ -15,7 +15,7 @@ import NoteReducer from './NoteReducer';
 import PersonnelReducer from './PersonnelReducer';
 import RoleReducer from './RoleReducer';
 import TeacherReducer from './TeacherReducer';
-import TimetableReducer from './TimetableReducer';
+import timetableReducer from './TimetableReducer';
 import TroncCommunReducer from './TroncCommunReducer';
 import TypeEvaluationReducer from './TypeEvaluationReducer';
 import TypeQuestionReducer from './TypeQuestionReducer';
@@ -35,7 +35,7 @@ const rootReducer = combineReducers({
     Personnel: PersonnelReducer,
     Role: RoleReducer,
     Teacher: TeacherReducer,
-    Timetable: TimetableReducer,
+    Timetable: timetableReducer,
     TroncCommun: TroncCommunReducer,
     TypeEvaluation: TypeEvaluationReducer,
     TypeQuestion: TypeQuestionReducer,

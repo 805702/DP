@@ -22,7 +22,13 @@ const initState = {
 const batimentReducer = (state = initState, action)=>{
     switch(action.type){
         case 'CREATE_BATIMENT':
-            return{...state, batiments:[...state.batiments, ...action.payload]}
+            let stateData = [...state.batiments]
+            if(stateData.length!==0){
+                if(action.payload.length===1) stateData=[...stateData, ...action.payload]
+                else stateData=[...action.payload]
+            } else stateData=[...action.payload]
+
+            return{...state, batiments:[...stateData]}
         default:
             return state
     }

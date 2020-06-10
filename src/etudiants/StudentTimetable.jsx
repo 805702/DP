@@ -51,7 +51,9 @@ class StudentTimetable extends Component {
                     {days.map(day=> {
                         let theLink =this.props.cours.map(cour=>{
                             if(cour.nomCours===line[day].cour.split('_')[0])return cour.idCour
+                            else return 'none'
                         })
+                        theLink = theLink.filter(link=>link!=='none')
                         theLink=theLink.filter(link=>link!==undefined)[0]
                         return line[day].cour.split('_')[0]===''?(
                         <div className='columnDay' key={line.index+day}>
@@ -117,6 +119,7 @@ class StudentTimetable extends Component {
     }
 
     getStudentSubjects=()=>{
+        console.log(this.props.cours)
         let cours = this.props.cours.map(cour=> 
                 <Link to={'/student/forum/'+cour.idCour} className="aTeacherSubject">
                     <span>{cour.nomCours}</span>

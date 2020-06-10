@@ -4,7 +4,7 @@
     border: 1px solid #3157A0;
     box-sizing: border-box;
     border-radius: 10px;
-    min-width: 100%;
+    width: 100%;
 }
 
 .settingsBlockHeader {
@@ -39,6 +39,11 @@
     width: 160px;
 }
 
+.nouveauModuleInputs
+{
+    padding: 5px;
+}
+
 .newSubjectsInputs>input:last-of-type {
     color: white;
     font-weight: 600;
@@ -55,4 +60,20 @@
     border-radius: 10px;
     background-color: green;
     margin-top: 5px;
+    color: white;
+}
+
+.newSubjectHeader span
+{
+    margin-left: 5px;
+}
+
+.toBeAddedSubject *, .moduleSubject *
+{
+    margin-left: 8px;
+}
+
+.toBeAddedSubject *:nth-child(odd), .moduleSubject *:nth-child(odd)
+{
+    font-weight: bold;
 }

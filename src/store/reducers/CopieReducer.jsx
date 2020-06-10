@@ -37,7 +37,13 @@ const initState = {
 const copieReducer = (state = initState, action)=>{
     switch(action.type){
         case 'CREATE_COPIE':
-            return{...state, copies:[...state.copies, ...action.payload]}
+            let stateData = [...state.copies]
+            if(stateData.length!==0){
+                if(action.payload.length===1) stateData=[...stateData, ...action.payload]
+                else stateData=[...action.payload]
+            } else stateData=[...action.payload]
+
+            return{...state, copies:[...stateData]}
         case 'UPDATE_COPIE':
             return{...state, copies:state.copies.map(copie=>copie.idCopie===action.payload.idCopie?action.payload:copie)}
         default:

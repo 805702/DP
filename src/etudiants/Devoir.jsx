@@ -66,7 +66,6 @@ class Devoir extends Component {
     displayQuestions=()=>{
         if(this.state.idEvaluation!==''){
             let evaluation = this.props.evaluations.find(evaluatn=>evaluatn.idEvaluation===this.state.idEvaluation)
-            let index = 0
             let theQuestions = evaluation.questions.map(question=>{
                 let optionIndex=0
                 let questionType = this.props.typeQuestions.find(typeQuestion=>typeQuestion.idTypeQuestion===Number(question.idTypeQuestion)).nomTypeQuestion
@@ -75,7 +74,7 @@ class Devoir extends Component {
                 return(
                     <div className="askedQuestion" key={question.index}>
                         <span className='askedQuestionHeader'>Question {question.index}</span>
-                        <span className='askedQuestionIndications'>{question.indications}</span>
+                        <span className='askedQuestionIndications'>Indications: {question.indications}</span>
                         <span className='askedQuestionIndications'>{question.question}</span>
                         {/* upload and image and display here on a 100 x 100 scale if there is a ref to this question */}
                         {question.refFiles.map((id,i)=><img key={i} src={"https://tranquil-thicket-81941.herokuapp.com/teacher/questionnaire/image/"+id} style={{height: "100px",width: "100px"}} alt="uploaded"/>)}
@@ -104,7 +103,8 @@ class Devoir extends Component {
     }
 
     onSaveClick=(e)=>{
-        let { id, value } = e.target;
+        // let { id, value } = e.target; this is the original version of the line below in case it stops working just uncomment this line
+        let { id} = e.target;
         this.setState({idEvaluation:this.state.idEvaluation?this.state.idEvaluation:id.split('_')[1]},()=>{
         let findCopie = this.props.copies.find(copie=>copie.idEvaluation === this.state.idEvaluation && copie.idEtudiant===this.state.idEtudiant && copie.idTypeEvaluation===3)
         console.log(11,this.state)
@@ -231,15 +231,6 @@ class Devoir extends Component {
         })
     }
 
-    onChange=(e)=>{
-        let daet = document.getElementById('date').value
-        daet = daet.split('-')
-        let time = document.getElementById('time').value
-        time= time.split(':')
-        let dateTime = new Date(daet[0],daet[1],daet[2],time[0],time[1])
-        dateTime=dateTime+''
-        dateTime=dateTime.split(' G')[0]
-    }
     componentDidMount() {
         fetch('https://tranquil-thicket-81941.herokuapp.com/student/compos/examen', {
             method: 'get',

@@ -1,0 +1,150 @@
+/*	==========================================================================================			*/
+
+
+/*==============================		Page evaluation 	==================================			*/
+
+#concernedSubject {
+    background-color: rgba(0, 0, 0, 0.397);
+    border: 1px solid black;
+    color: white;
+}
+
+.QuestionnaireOverallHolder {
+    background: rgb(0, 0, 0, 0.395);
+    padding: 10px;
+    margin-bottom: 5px;
+}
+
+
+/*	Publier note*/
+
+.publierNoteOverallHolder {
+    padding: 0px 10px 0px 10px;
+}
+
+
+/*		Encadre le champ de type select d'une div et tu ajoute la classe suivante au fichier css	*/
+
+.displayClasseSelectHolder {
+    background: rgb(0, 0, 0, 0.395);
+    padding: 10px;
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.noCourses {
+    font-size: 1.2rem;
+    padding: 10px;
+    color: white;
+}
+
+
+/*		Champ select	c'est l'unique propriete que doit avoir ce Champ */
+
+.publierNoteChooseClasse {
+    padding: 2px;
+}
+
+
+/* Le component qui affiche les modules */
+
+.displayTheModules {
+    display: flex;
+    margin-top: 10px;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+
+/*		Le component qui affiche les informations sur modules	*/
+
+.moduleState {
+    margin: 0px 5px 10px 5px;
+    border: 1px solid black;
+    padding: 5px;
+}
+
+
+/*		==================================================================================================			*/
+
+
+/*		=============================== Page de correction	==============================================	*/
+
+.displayTeacherSubjectsOverallHolder {
+    flex-direction: row;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    overflow-x: scroll;
+    margin: 10px;
+    padding: 10px 0;
+    /* background: rgba(0, 0, 0, 0.395); */
+}
+
+
+/*	Ajouter la propriete suivante au component qui affiche la liste des informations concernant les evaluations d'un module	*/
+
+.corrigerSubject {
+    margin: 2px 5px 2px 5px;
+}
+
+
+/*		==================================================================================================			*/
+
+
+/*		=============================== Page de gerrer emploie de temps	==============================================	*/
+
+.studentTimeTableOverall {
+    display: grid;
+    justify-content: center;
+    /*margin-top: 20px;*/
+    /* Supprimer cette propriete*/
+}
+
+.timeTableTab {
+    font-weight: bolder;
+    color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: nowrap;
+}
+
+
+/*	Voici les proprietes que doivent avoir les pouttons	*/
+
+.timeTableTab .tabElement {
+    padding: 10px;
+    background-color: turquoise;
+    border: 1px solid white;
+    margin: 0px 2px 0px 2px;
+}
+
+.timeTableTab .tabElement:hover {
+    border: 1px solid rgba(100, 100, 190, 0.5);
+}
+
+.activeTab {
+    background-color: rgba(240, 0, 0, 1) !important;
+}
+
+
+/*		Vos matieres enseignees	*/
+
+.theTeacherSubjectsBody a {
+    color: white;
+    background-color: rgba(150, 150, 150, 1);
+    margin-bottom: 10px;
+    padding: 5px;
+}
+
+
+/*		Dans le sous component qui contient un bouton cliquable (Ouvrir le cours)	*/
+
+.gotoClass {
+    padding: 5px;
+    border: 1px solid white;
+    text-align: center;
+    border-radius: 10px;
+}

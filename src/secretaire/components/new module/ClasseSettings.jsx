@@ -1,5 +1,10 @@
 import React, { Component } from 'react';
 import { connect }  from 'react-redux'
+import Spinner from '../../../shared/alerts/Spinner';
+import BadAlert from '../../../shared/alerts/BadAlert';
+import GoodAlert from '../../../shared/alerts/GoodAlert';
+import JustAlert from '../../../shared/alerts/JustAlert';
+
 
 import './ClasseSettigns.css'
 
@@ -24,7 +29,7 @@ class ClasseSettings extends Component {
     }
 
     TeachersOnly=()=>{
-        let Teachers = this.props.personnels.filter(personnel=>personnel.role==='enseignant')
+        let Teachers = this.props.personnels.filter(personnel=>personnel.role==='enseignant' || personnel.role==='coordonateur')
         return Teachers
     }
 
@@ -39,9 +44,9 @@ class ClasseSettings extends Component {
     }
 
     showFiliereClass=()=>{
-        let requiredClasses = this.props.classes.filter(classe=>classe.filiere.idFiliere === this.state.filiere
-        )
+        let requiredClasses = this.props.classes.filter(classe=>classe.filiere.idFiliere === this.state.filiere)
         console.log(this.state.filiere)
+        
         return requiredClasses.map(classe=>
         <option key={classe.filiere.nomFiliere+' '+classe.niveau} value={classe.idClasse}>
             {classe.filiere.nomFiliere+' '+classe.niveau}
@@ -150,15 +155,17 @@ class ClasseSettings extends Component {
             return null
         })
 
-        return subjects.map(subject=>(
-            <div className="moduleSubject" key={subject.subject.nomCours}>
+        return subjects.map(subject=>{
+            let teacher = subject.subject!==undefined?this.props.personnels.find(personnel=>personnel.idPersonnel===subject.subject.nomEnseignant):undefined
+            teacher = teacher!==undefined? teacher.nom+' '+teacher.prenom:'Aucun enseignant pour ce cours'
+            return <div className="moduleSubject" key={subject.subject.nomCours}>
                 <span className=''>{subject.index}</span>
                 <span className=''>{subject.subject.nomCours}</span>
                 <span className=''>{subject.subject.codeCours}</span>
                 <span className=''>{subject.poidsMatiere}</span>
-                <span className=''>{(function(person){var personnel=person.find(personnel=>(personnel.idPersonnel === subject.subject.nomEnseignant)); return personnel.nom+" "+personnel.prenom})(this.props.personnels)}</span>
+                <span className=''>{teacher}</span>
             </div>
-        ))
+        })
     }
 
     handleChange=(e)=>{
@@ -177,9 +184,9 @@ class ClasseSettings extends Component {
                 if(totalPoids+Number(newSubject.poidsMatiere)<=1){
                     let newSubjects =[...this.state.newMatieres, newSubject]
                     this.setState({newMatieres:newSubjects},()=>this.resetSubject())
-                }else alert('The sum total of weights should not be greater than 1. Adjust the weightings to make their sum total 1 and try again \n\nYou are on an excess of '+(totalPoids+Number(newSubject.poidsMatiere)-1))
-            }else alert('A subject with this subject code is already taken. verify and try again')
-        }else alert('Fill in all the fields for the new class before clicking on ajouter')
+                }else alert('La somme totale des poids ne doit pas être supérieure à 1. Ajustez les pondérations pour faire leur somme totale 1 et réessayez \n \nVous êtes en excès de '+(totalPoids+Number(newSubject.poidsMatiere)-1))
+            }else alert('Un sujet avec ce code sujet est déjà pris. vérifier et réessayer')
+        }else alert('Remplissez tous les champs de la nouvelle classe avant de cliquer sur ajouter')
     }
 
     teacherOptions=()=>{
@@ -236,7 +243,7 @@ class ClasseSettings extends Component {
                 </div>
                 <div className="newSubjectHeader" onClick={this.openNewSubject}>
                     <i className='fa fa-plus-circle' id='subjectHeaderIcon' />
-                    <span className='newSubjectName'>Nouveau matiere</span>
+                    <span className='newSubjectName'>Nouvelle matiere</span>
                 </div>
                 {this.state.newSubject?<div className="newSubjectsInputs">
                     <input type='text' value={this.state.nomNewMatiere} placeholder='Nom matiere' id='nomNewMatiere' onChange={this.handleChange} />
@@ -295,6 +302,7 @@ class ClasseSettings extends Component {
                     cours:newSubjects,
                     startDate: Date.now()
                 }
+                console.log(newModule)
 
                 //prepare cours Array of objects
                 let newMatieres= []
@@ -331,7 +339,9 @@ class ClasseSettings extends Component {
                         return null
                     }
                 })
+                console.log(update)
                 if(update.length>0){
+                    this.setState({spin:true, spinMessage:"Nous creeons les cours"})
                     fetch('https://tranquil-thicket-81941.herokuapp.com/classe/module/cour/update', {
                     method: 'post',
                     headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")},
@@ -350,12 +360,33 @@ class ClasseSettings extends Component {
                             nomEnseignant: cour.idEnseignant,
                         }})
                         this.props.dispatch({type: "UPDATE_COUR", payload: cours})
+                        // this.setState({
+                        //     spin:false,
+                        //     alertCounter:0,
+                        //     spinMessage:"Module cree avec success",
+                        //     gAlert:'good',
+                        // })
+
                     }
                     else{
                       console.log(data)
+                    //   this.setState({
+                    //         spin:false,
+                    //         alertCounter:0,
+                    //         spinMessage:"Echec de creation de module",
+                    //         gAlert:'bad',
+                    //     })
                     }
                   })
-                  .catch(error=>console.log(error))   
+                  .catch(error=>{
+                    // this.setState({
+                    //     spin:false,
+                    //     alertCounter:0,
+                    //     spinMessage:"INTERNAL SERVER ERROR",
+                    //     gAlert:'just',
+                    // })
+                      console.log(error)
+                    })
                   }      
                 if(created.length>0){
                     fetch('https://tranquil-thicket-81941.herokuapp.com/classe/module/new', {
@@ -389,12 +420,35 @@ class ClasseSettings extends Component {
                                 nomEnseignant: cour.idEnseignant,
                             }})
                             this.props.dispatch({type: "CREATE_COUR", payload: cours})
+                            this.setState({
+                                spin:false,
+                                alertCounter:0,
+                                spinMessage:"Module cree avec success",
+                                gAlert:'good',
+                            })
+
                         }
                         else{
                           console.log(data)
+                              this.setState({
+                                    spin:false,
+                                    alertCounter:0,
+                                    spinMessage:"Echec de creation de module",
+                                    gAlert:'bad',
+                                })
+
                         }
                       })
-                      .catch(error=>console.log(error))   
+                      .catch(error=>{
+                          console.log(error)
+                        this.setState({
+                            spin:false,
+                            alertCounter:0,
+                            spinMessage:"INTERNAL SERVER ERROR",
+                            gAlert:'just',
+                        })
+
+                        })   
                   }      
                         /*
                     you can handle your backend here... do all neccessary creates, updates,
@@ -414,8 +468,8 @@ class ClasseSettings extends Component {
                     for the courses to create, the array is: created
                 */
                 // this.resetModule()
-            }else alert('Total weightings of the subjects is less than 1.\nTotal weightings of subjects for a module should be equal to 1.\nAdjust the weightings and try again')
-        }else alert('Invalid module name or module code or module weight or no subjects for the module. verify this and try again')
+            }else alert('La pondération totale des sujets est inférieure à 1. \nLa pondération totale des sujets pour un module doit être égale à 1. \nRéglez les pondérations et réessayez')
+        }else alert('Nom de module ou code de module ou poids de module non valide ou aucun sujet pour le module. vérifiez cela et réessayez')
     }
 
     nouveauModule=()=>{
@@ -482,13 +536,26 @@ class ClasseSettings extends Component {
           .catch(error=>console.log(error))     
     }
 
+    setGAlertFalse=()=>{
+        this.setState({gAlert:false})
+    }
+  
+    setAlertCounter=()=>{
+        this.setState({alertCounter:this.state.alertCounter+1})
+    }
+    
     render() {
         return (
             <div className='classeSettingsContainer'>
                 <span className="settingsBlockHeader">ADMINISTRATION DES CLASSES</span>
+                <Spinner spin={this.state.spin} message={this.state.spinMessage}/>
+                {this.state.gAlert?<BadAlert message={this.state.spinMessage} alertCounter={this.state.alertCounter} setCounter={this.setAlertCounter} gAlertSetter={this.setGAlertFalse} spin={this.state.gAlert} message={this.state.spinMessage} />:null}
+                {this.state.gAlert?<GoodAlert message={this.state.spinMessage} alertCounter={this.state.alertCounter} setCounter={this.setAlertCounter} gAlertSetter={this.setGAlertFalse} spin={this.state.gAlert} message={this.state.spinMessage} />:null}
+                {this.state.gAlert?<JustAlert message={this.state.spinMessage} alertCounter={this.state.alertCounter} setCounter={this.setAlertCounter} gAlertSetter={this.setGAlertFalse} spin={this.state.gAlert} message={this.state.spinMessage} />:null}
+
                 <div className="chooseSettingsClass">
                     <select className='settingsClass' onChange={(e)=>this.setState({filiere:e.target.value})} id='filiere'>
-                        <option value='' hidden  >Choisir une faculte</option>
+                        <option value='' hidden  >Choisir une filiere</option>
                         {this.FacultyOptions()}
                     </select>
                     <select className='settingsClass' onChange={(e)=>this.setState({classe:e.target.value})} id='choosenClasse' >

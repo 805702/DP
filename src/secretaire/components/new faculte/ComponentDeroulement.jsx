@@ -42,7 +42,7 @@ class ComponentDeroulment extends Component
 				<div className='facultyHead' onClick={()=>this.handleOpenFaculte('faculty'+faculty.index)}>
 					<span className="CDTitle">{faculty.nomFaculte}</span>
 					<div className="endPart">
-						<input type='button' value='Delete' className='deleteFaculty' onClick={()=>this.props.handleDeleteFaculty(faculty.index)}/>
+						<input type='button' value='Supprimer' className='deleteFaculty' onClick={()=>this.props.handleDeleteFaculty(faculty.index)}/>
 						<span className="CDIcon"><i id={'faculty'+faculty.index} className='fa fa-2x fa-angle-down' /></span>
 					</div>
 				</div>

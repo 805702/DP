@@ -17,7 +17,13 @@ const initState = {
 const coordonateurReducer = (state = initState, action)=>{
     switch(action.type){
         case 'CREATE_COORDONATEUR':
-            return{...state, coordonateurs:[...state.coordonateurs, ...action.payload]}
+            let stateData = [...state.coordonateurs]
+            if(stateData.length!==0){
+                if(action.payload.length===1) stateData=[...stateData, ...action.payload]
+                else stateData=[...action.payload]
+            } else stateData=[...action.payload]
+
+            return{...state, coordonateurs:[...stateData]}
         default:
             return state
     }

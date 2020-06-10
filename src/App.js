@@ -24,18 +24,20 @@ import PublierNoteExamen from './coordonateur/components/PublierNoteExamen';
 import TeacherForum from './enseignant/TeacherForum';
 import StudentForum from './etudiants/StudentForum';
 import CreateStudents from './secretaire/components/CreateStudents';
+import DisplayStudents from './secretaire/components/DisplayStudents';
 
 class App extends React.Component {
     render() {
-        console.log(this.props)
+        // console.log(this.props)
         return ( <
             Router >
             <
             Switch >
             <
+            Route exact path = '/theStudents' > < DisplayStudents / > < /Route> <
             Route exact path = '/coordo' > < TimeTableFormat / > < /Route> <
             Route exact path = '/coordo/publish-notes' > < PublierNoteExamen / > < /Route> <
-            Route exact path = '/teacher' > < TeacherTimetable / > < /Route> <
+            Route exact path = '/teacher' > < TeacherTimetable / > < /Route>  <
             Route exact path = '/teacher/questionnaire' > < Questionnaire / > < /Route> <
             Route exact path = '/teacher/correct' > < CorrigerEvaluation / > < /Route> <
             Route exact path = '/teacher/notes' > < TeacherNotes / > < /Route> <
@@ -50,7 +52,7 @@ class App extends React.Component {
             Route exact path = '/settings' > < Settings / > < /Route> <
             Route exact path = '/resetpwd' > < ForgotPassword / > < /Route>  <
             Route exact path = '/sendMail' > < SendMail / > < /Route> <
-            Route exact path = '/signup' > < SignUp / > < /Route> <
+            Route exact path = '/signup' > < SignUp / > < /Route>  <
             Route exact path = '/newstudent' > < CreateStudents / > < /Route> <
             Route exact path = '/'
             render = {
@@ -69,14 +71,14 @@ class App extends React.Component {
                     } else { return ( < SignIn / > ) }
                 }
             }
-            /> <
-            Route exact path = '/student' > < StudentTimetable / > < /Route>  <
-            Route exact path = '/student/examen' > < Examen / > < /Route>  <
-            Route exact path = '/student/devoir' > < Devoir / > < /Route>  <
-            Route exact path = '/student/note' > < StudentNotes / > < /Route>  <
+            />  <
+            Route exact path = '/student' > < StudentTimetable / > < /Route> <
+            Route exact path = '/student/examen' > < Examen / > < /Route> <
+            Route exact path = '/student/devoir' > < Devoir / > < /Route> <
+            Route exact path = '/student/note' > < StudentNotes / > < /Route> <
             Redirect to = '/' / >
             <
-            /Switch>  <
+            /Switch> <
             /Router >
         );
     }

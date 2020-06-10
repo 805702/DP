@@ -85,7 +85,7 @@ i {
 
 .forumMessagesPer {
     height: 74vh;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .forumMessagesPer::-webkit-scrollbar {

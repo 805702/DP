@@ -21,70 +21,70 @@ export default function TimeTableLine(props) {
                     <option hidden>Quel Cours</option>
                     {props.cours}
                     </select>
-                <select id='mon_salle' className='selectCours' value={props.line.mon.salle} onChange={(e)=>props.lineNumber(props.line.index, e)}>
+                {/* <select id='mon_salle' className='selectCours' value={props.line.mon.salle} onChange={(e)=>props.lineNumber(props.line.index, e)}>
                     <option hidden>Salle</option>
                     {props.salles}
-                </select>
+                </select> */}
             </div>
             <div className="columnDay">
                 <select id='tue_cours' className='selectCours coursPadding' value={props.line.tue.cour} onChange={(e)=>props.lineNumber(props.line.index, e)}>
                     <option hidden >Quel Cours</option>
                     {props.cours}
                     </select>
-                <select id='tue_salle' className='selectCours' value={props.line.tue.salle} onChange={(e)=>props.lineNumber(props.line.index, e)}>
+                {/* <select id='tue_salle' className='selectCours' value={props.line.tue.salle} onChange={(e)=>props.lineNumber(props.line.index, e)}>
                     <option hidden >Salle</option>
                     {props.salles}
-                </select>
+                </select> */}
             </div>
             <div className="columnDay">
                 <select id='wed_cours' className='selectCours coursPadding' value={props.line.wed.cour} onChange={(e)=>props.lineNumber(props.line.index, e)}>
                     <option hidden >Quelle Cours</option>
                     {props.cours}
                     </select>
-                <select id='wed_salle' className='selectCours' value={props.line.wed.salle} onChange={(e)=>props.lineNumber(props.line.index, e)}>
+                {/* <select id='wed_salle' className='selectCours' value={props.line.wed.salle} onChange={(e)=>props.lineNumber(props.line.index, e)}>
                     <option hidden >Salle</option>
                     {props.salles}
-                </select>
+                </select> */}
             </div>
             <div className="columnDay">
                 <select id='thur_cours' className='selectCours coursPadding' value={props.line.thur.cour} onChange={(e)=>props.lineNumber(props.line.index, e)}>
                     <option hidden >Quelle Cours</option>
                     {props.cours}
                     </select>
-                <select id='thur_salle' className='selectCours' value={props.line.thur.salle} onChange={(e)=>props.lineNumber(props.line.index, e)}>
+                {/* <select id='thur_salle' className='selectCours' value={props.line.thur.salle} onChange={(e)=>props.lineNumber(props.line.index, e)}>
                     <option hidden >Salle</option>
                     {props.salles}
-                </select>
+                </select> */}
             </div>
             <div className="columnDay">
                 <select id='fri_cours' className='selectCours coursPadding' value={props.line.fri.cour} onChange={(e)=>props.lineNumber(props.line.index, e)}>
                     <option hidden >Quelle Cours</option>
                     {props.cours}
                     </select>
-                <select id='fri_salle' className='selectCours' value={props.line.fri.salle} onChange={(e)=>props.lineNumber(props.line.index, e)}>
+                {/* <select id='fri_salle' className='selectCours' value={props.line.fri.salle} onChange={(e)=>props.lineNumber(props.line.index, e)}>
                     <option hidden >Salle</option>
                     {props.salles}
-                </select>
+                </select> */}
             </div>
             <div className="columnDay">
                 <select id='sat_cours' className='selectCours coursPadding' value={props.line.sat.cour} onChange={(e)=>props.lineNumber(props.line.index, e)}>
                     <option hidden >Quelle Cours</option>
                     {props.cours}
                     </select>
-                <select id='sat_salle' className='selectCours' value={props.line.sat.salle} onChange={(e)=>props.lineNumber(props.line.index, e)}>
+                {/* <select id='sat_salle' className='selectCours' value={props.line.sat.salle} onChange={(e)=>props.lineNumber(props.line.index, e)}>
                     <option hidden >Salle</option>
                     {props.salles}
-                </select>
+                </select> */}
             </div>
             <div className="columnDay">
                 <select id='sun_cours' className='selectCours coursPadding' value={props.line.sun.cour} onChange={(e)=>props.lineNumber(props.line.index, e)}>
                     <option hidden >Quelle Cours</option>
                     {props.cours}
                     </select>
-                <select id='sun_salle'className='selectCours' value={props.line.sun.salle}  onChange={(e)=>props.lineNumber(props.line.index, e)}>
+                {/* <select id='sun_salle'className='selectCours' value={props.line.sun.salle}  onChange={(e)=>props.lineNumber(props.line.index, e)}>
                     <option hidden >Salle</option>
                     {props.salles}
-                </select>
+                </select> */}
             </div>
         </div>
             ):(

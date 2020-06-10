@@ -25,7 +25,13 @@ const initState = {
 const evaluationReducer = (state = initState, action)=>{
     switch(action.type){
         case 'CREATE_EVALUATION':
-            return{...state, evaluations:[...action.payload]}
+            let stateData = [...state.evaluations]
+            if(stateData.length!==0){
+                if(action.payload.length===1) stateData=[...stateData, ...action.payload]
+                else stateData=[...action.payload]
+            } else stateData=[...action.payload]
+
+            return{...state, evaluations:[...stateData]}
         case 'DELETE_EVALUATION':
             let newList = state.evaluations.filter(evaluation=>action.payload !== evaluation.idEvaluation)
             return{...state, evaluations:newList}

@@ -3,13 +3,20 @@ const initState = {
     ]
 }
 
-const timeTableReducer = (state = initState, action)=>{
+const TimetableReducer = (state = initState, action)=>{
     switch(action.type){
         case 'CREATE_TIMETABLE':
-            return{...state, timetables:[...state.timetables, ...action.payload]}
+            let stateData = [...state.timetables]
+            if(stateData.length!==0){
+                if(action.payload.length===1) stateData=[...stateData, ...action.payload]
+                else stateData=[...action.payload]
+            } else stateData=[...action.payload]
+
+
+            return{...state, timetables:[...stateData]}
         default:
             return state
     }
 }
 
-export default timeTableReducer;
+export default TimetableReducer;
