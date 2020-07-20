@@ -90,9 +90,9 @@ class StudentForum extends Component {
         //if its an image, then display the image in the img tag
         //else make the ref downloadable on click
         //adjust the return below to either be an image or a link that downloads a ref on Click
-        let refFile = !message.refFile?null:message.refFile.filetype.split('/').includes('image')?(<img src={"https://tranquil-thicket-81941.herokuapp.com/forum/file/"+message.refFile.link} alt='refFile' className='messageImage' />)
-        :message.refFile.filetype.split('/').includes('audio')?<ReactAudioPlayer src={"https://tranquil-thicket-81941.herokuapp.com/forum/file/"+message.refFile.link} autoPlay={false} controls />
-        :<a href={"https://tranquil-thicket-81941.herokuapp.com/forum/file/"+message.refFile.link} download={message.refFile.name}>{message.refFile.name}</a>
+        let refFile = !message.refFile?null:message.refFile.filetype.split('/').includes('image')?(<img src={"https://dp-dbv2.herokuapp.com/forum/file/"+message.refFile.link} alt='refFile' className='messageImage' />)
+        :message.refFile.filetype.split('/').includes('audio')?<ReactAudioPlayer src={"https://dp-dbv2.herokuapp.com/forum/file/"+message.refFile.link} autoPlay={false} controls />
+        :<a href={"https://dp-dbv2.herokuapp.com/forum/file/"+message.refFile.link} download={message.refFile.name}>{message.refFile.name}</a>
         return (
             <div key={key} className={messageClassName+ ' message'}>
                 <span className='messageSender'>{nomSender}</span>
@@ -159,7 +159,7 @@ class StudentForum extends Component {
         if(this.state.refFile!=='' || this.state.message!==''){
             let ref = null;
             if(this.state.refFile){
-               let data = await fetch('https://tranquil-thicket-81941.herokuapp.com/forum/upload', {
+               let data = await fetch('https://dp-dbv2.herokuapp.com/forum/upload', {
                          method: 'post',
                          body: this.state.refFile
                        })
@@ -309,7 +309,7 @@ class StudentForum extends Component {
                     <div className='support' key={support.ref}>
                         <i className={'fa fa-'+(this.fileTypeIcons[support.nameFile.split('.')[support.nameFile.split('.').length-1]] || 'file' )+'-o'} />
                         <span className='nomSupport'>{support.nameFile}</span>
-                        <a href={`https://tranquil-thicket-81941.herokuapp.com/forum/file/${support.link}`} download={support.nameFile}><i className='fa fa-download' /></a>
+                        <a href={`https://dp-dbv2.herokuapp.com/forum/file/${support.link}`} download={support.nameFile}><i className='fa fa-download' /></a>
                     </div>
                 ))}
             </div>
@@ -347,7 +347,7 @@ class StudentForum extends Component {
 
     componentDidMount(){
         setInterval(() => {this.setState({ seconds: this.state.seconds+1 })}, 1000)
-        fetch('https://tranquil-thicket-81941.herokuapp.com/teacher/forum', {
+        fetch('https://dp-dbv2.herokuapp.com/teacher/forum', {
            method: 'get',
            headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")}
          })
@@ -410,7 +410,7 @@ class StudentForum extends Component {
            }
          })
          .catch(error=>console.log(error))      
-        this.socket = io("https://tranquil-thicket-81941.herokuapp.com/");
+        this.socket = io("https://dp-dbv2.herokuapp.com/");
         this.socket.on('init', (msg) => {
             // this.scrollToBottom()
         });

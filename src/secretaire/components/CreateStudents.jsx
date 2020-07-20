@@ -19,7 +19,7 @@ class CreateStudents extends Component {
             'file',
             this.state.newSupport
         )
-        fetch('https://tranquil-thicket-81941.herokuapp.com/manage-personnel/api/students', {
+        fetch('https://dp-dbv2.herokuapp.com/manage-personnel/api/students', {
             method: 'post',
             body: formData
         })

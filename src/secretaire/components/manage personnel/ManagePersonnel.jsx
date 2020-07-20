@@ -41,7 +41,7 @@ class ManagePersonnel extends Component {
         */
         let Perso = this.props.personnels.find(personnel=>personnel.matricule===personnelMatricule)
         this.setState({spin:true, spinMessage:"Nous supprimons un membre du personnel"})
-        fetch(`https://tranquil-thicket-81941.herokuapp.com/manage-personnel/${Perso.idPersonnel}/delete`, {
+        fetch(`https://dp-dbv2.herokuapp.com/manage-personnel/${Perso.idPersonnel}/delete`, {
             method: 'delete',
             headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")}
           })
@@ -120,7 +120,7 @@ class ManagePersonnel extends Component {
                     After having updated these field, fetch the personnel data back to the redux state so the interface can refresh
                 */
                 this.setState({spin:true, spinMessage:"Nous modifions le coordonateur"})
-                fetch(`https://tranquil-thicket-81941.herokuapp.com/manage-personnel/${this.state.editableObject.idPersonnel}/update`, {
+                fetch(`https://dp-dbv2.herokuapp.com/manage-personnel/${this.state.editableObject.idPersonnel}/update`, {
                         method: 'put',
                         headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")},
                         body: JSON.stringify({
@@ -173,7 +173,7 @@ class ManagePersonnel extends Component {
                     After having updated these field, fetch the personnel data back to the redux state so the interface can refresh
                 */
                     this.setState({spin:true, spinMessage:"Nous modifions le personnel"})
-                    fetch(`https://tranquil-thicket-81941.herokuapp.com/manage-personnel/${this.state.editableObject.idPersonnel}/update`, {
+                    fetch(`https://dp-dbv2.herokuapp.com/manage-personnel/${this.state.editableObject.idPersonnel}/update`, {
                          method: 'put',
                          headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")},
                          body: JSON.stringify({
@@ -331,7 +331,7 @@ class ManagePersonnel extends Component {
             let coordoClasses = this.props.classes.filter(classe=>classe.filiere.nomFiliere===this.state.newPersonnelCoordoClass)
             let coordoUploadObject={matriculePersonnel:this.state.newPersonnel.matricule, classes:coordoClasses}
             this.setState({spin:true, spinMessage:"Nous creeons le coordonateur"})
-            fetch('https://tranquil-thicket-81941.herokuapp.com/manage-personnel/new', {
+            fetch('https://dp-dbv2.herokuapp.com/manage-personnel/new', {
                 method: 'post',
                 headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")},
                 body: JSON.stringify({
@@ -396,7 +396,7 @@ class ManagePersonnel extends Component {
                     The object to be created in the personnel collection is: this.state.newPersonnel
                     */
                    this.setState({spin:true, spinMessage:"Nous creeons le personnel"})
-                    fetch('https://tranquil-thicket-81941.herokuapp.com/manage-personnel/new', {
+                    fetch('https://dp-dbv2.herokuapp.com/manage-personnel/new', {
                         method: 'post',
                         headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")},
                         body: JSON.stringify({
@@ -536,7 +536,7 @@ class ManagePersonnel extends Component {
     
     componentDidMount(){
         console.log(this.props)
-       fetch('https://tranquil-thicket-81941.herokuapp.com/manage-personnel/users-classes-faculties', {
+       fetch('https://dp-dbv2.herokuapp.com/manage-personnel/users-classes-faculties', {
             method: 'get',
             headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")}
           })

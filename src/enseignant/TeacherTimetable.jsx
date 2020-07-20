@@ -187,7 +187,7 @@ class TeacherTimetable extends Component {
     }
  componentDidMount(){
 //   console.log('Mounted')
-        fetch('https://tranquil-thicket-81941.herokuapp.com/teacher/timetable', {
+        fetch('https://dp-dbv2.herokuapp.com/teacher/timetable', {
             method: 'get',
             headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")}
           })

@@ -170,7 +170,7 @@ class CorrigerExamen extends Component {
                 studentNote.notes[evalTypeName].note=0
                 //Create a note object
                 //the note object is studentNote
-                let newNote = await fetch(`https://tranquil-thicket-81941.herokuapp.com/teacher/notes/new`, {
+                let newNote = await fetch(`https://dp-dbv2.herokuapp.com/teacher/notes/new`, {
                          method: 'post',
                          headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")},
                          body: JSON.stringify({
@@ -195,7 +195,7 @@ class CorrigerExamen extends Component {
             }else{
                 //update the note object with idNote: studentNote.idNote
                 //the new object is studentNote
-               let updateNote = await fetch(`https://tranquil-thicket-81941.herokuapp.com/teacher/notes/${studentNote.idNote}/update`, {
+               let updateNote = await fetch(`https://dp-dbv2.herokuapp.com/teacher/notes/${studentNote.idNote}/update`, {
                          method: 'put',
                          headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")},
                          body: JSON.stringify({
@@ -374,7 +374,7 @@ class CorrigerExamen extends Component {
             3. fetch data back to the state.
 
         */
-        let updateStudentPaper = await fetch(`https://tranquil-thicket-81941.herokuapp.com/teacher/notes/examen/${studentPaper.idCopie}/update`, {
+        let updateStudentPaper = await fetch(`https://dp-dbv2.herokuapp.com/teacher/notes/examen/${studentPaper.idCopie}/update`, {
                          method: 'put',
                          headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")},
                          body: JSON.stringify({
@@ -446,7 +446,7 @@ class CorrigerExamen extends Component {
                 if(verifyNote.notes[evalTypeName].published===false){
                     //update the note with id: verifyNote.idNote
                     //the new object to replace with is: verifyNote
-                    let updateNote = await fetch(`https://tranquil-thicket-81941.herokuapp.com/teacher/notes/${verifyNote.idNote}/update`, {
+                    let updateNote = await fetch(`https://dp-dbv2.herokuapp.com/teacher/notes/${verifyNote.idNote}/update`, {
                          method: 'put',
                          headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")},
                          body: JSON.stringify({
@@ -474,7 +474,7 @@ class CorrigerExamen extends Component {
                 //create a new note
                 //the object that is created is: verifyNote
                 console.log(1555,verifyNote)
-            let newNote = await fetch(`https://tranquil-thicket-81941.herokuapp.com/teacher/notes/new`, {
+            let newNote = await fetch(`https://dp-dbv2.herokuapp.com/teacher/notes/new`, {
                          method: 'post',
                          headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")},
                          body: JSON.stringify({
@@ -558,7 +558,7 @@ class CorrigerExamen extends Component {
         }else return null
     }
     componentDidMount() {
-        fetch('https://tranquil-thicket-81941.herokuapp.com/teacher/notes/correct', {
+        fetch('https://dp-dbv2.herokuapp.com/teacher/notes/correct', {
             method: 'get',
             headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")}
           })

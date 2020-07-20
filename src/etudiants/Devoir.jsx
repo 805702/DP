@@ -77,7 +77,7 @@ class Devoir extends Component {
                         <span className='askedQuestionIndications'>Indications: {question.indications}</span>
                         <span className='askedQuestionIndications'>{question.question}</span>
                         {/* upload and image and display here on a 100 x 100 scale if there is a ref to this question */}
-                        {question.refFiles.map((id,i)=><img key={i} src={"https://tranquil-thicket-81941.herokuapp.com/teacher/questionnaire/image/"+id} style={{height: "100px",width: "100px"}} alt="uploaded"/>)}
+                        {question.refFiles.map((id,i)=><img key={i} src={"https://dp-dbv2.herokuapp.com/teacher/questionnaire/image/"+id} style={{height: "100px",width: "100px"}} alt="uploaded"/>)}
                         
                       {questionType==='QCM'?(
                             <form  className="displayOptions">
@@ -117,7 +117,7 @@ class Devoir extends Component {
 
                 1. change the copie with idCopie: findCopie.idCopie with findCopie
             */
-             fetch(`https://tranquil-thicket-81941.herokuapp.com/student/compos/examen/${findCopie.idCopie}/update`, {
+             fetch(`https://dp-dbv2.herokuapp.com/student/compos/examen/${findCopie.idCopie}/update`, {
                          method: 'put',
                          headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")},
                          body: JSON.stringify({
@@ -167,7 +167,7 @@ class Devoir extends Component {
                 1. the new copie to be created is toBeUploadedCopie
             */
             console.log("hello",toBeUploadedCopie,this.state,id)
-            fetch(`https://tranquil-thicket-81941.herokuapp.com/student/compos/examen/new`, {
+            fetch(`https://dp-dbv2.herokuapp.com/student/compos/examen/new`, {
                          method: 'post',
                          headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")},
                          body: JSON.stringify({
@@ -232,7 +232,7 @@ class Devoir extends Component {
     }
 
     componentDidMount() {
-        fetch('https://tranquil-thicket-81941.herokuapp.com/student/compos/examen', {
+        fetch('https://dp-dbv2.herokuapp.com/student/compos/examen', {
             method: 'get',
             headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")}
           })

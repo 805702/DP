@@ -33,7 +33,7 @@ class SendMailBody extends Component {
     handleSubmit =(e)=>{
         e.preventDefault();
         this.setState({spin:true})
-        fetch('https://tranquil-thicket-81941.herokuapp.com/send-mail', {
+        fetch('https://dp-dbv2.herokuapp.com/send-mail', {
             method: 'post',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({

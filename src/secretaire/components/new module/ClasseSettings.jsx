@@ -342,7 +342,7 @@ class ClasseSettings extends Component {
                 console.log(update)
                 if(update.length>0){
                     this.setState({spin:true, spinMessage:"Nous creeons les cours"})
-                    fetch('https://tranquil-thicket-81941.herokuapp.com/classe/module/cour/update', {
+                    fetch('https://dp-dbv2.herokuapp.com/classe/module/cour/update', {
                     method: 'post',
                     headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")},
                     body: JSON.stringify({
@@ -389,7 +389,7 @@ class ClasseSettings extends Component {
                     })
                   }      
                 if(created.length>0){
-                    fetch('https://tranquil-thicket-81941.herokuapp.com/classe/module/new', {
+                    fetch('https://dp-dbv2.herokuapp.com/classe/module/new', {
                         method: 'post',
                         headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")},
                         body: JSON.stringify({
@@ -494,7 +494,7 @@ class ClasseSettings extends Component {
     }
 
     componentDidMount(){
-        fetch('https://tranquil-thicket-81941.herokuapp.com/classe/module/users-courses-modules', {
+        fetch('https://dp-dbv2.herokuapp.com/classe/module/users-courses-modules', {
             method: 'get',
             headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")}
           })

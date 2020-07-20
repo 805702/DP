@@ -42,7 +42,7 @@ class StudentNotes extends Component {
         </div>
     )
     componentDidMount(){
-        fetch('https://tranquil-thicket-81941.herokuapp.com/student/compos/notes-courses', {
+        fetch('https://dp-dbv2.herokuapp.com/student/compos/notes-courses', {
             method: 'get',
             headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")}
           })

@@ -56,7 +56,7 @@ class NewFaculte extends Component
 	handleDeleteFaculty=(facultyIndex)=>{
 		console.log(facultyIndex,this.props.facultes[facultyIndex-1])
 		this.setState({spin:true, spinMessage:"Nous supprimons la faculte"})
-		fetch(`https://tranquil-thicket-81941.herokuapp.com/faculty/${this.props.facultes[facultyIndex-1]._id}/delete`, {
+		fetch(`https://dp-dbv2.herokuapp.com/faculty/${this.props.facultes[facultyIndex-1]._id}/delete`, {
             method: 'delete',
             headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")}
           })
@@ -126,7 +126,7 @@ class NewFaculte extends Component
 	}
 	
 	loadClasses=async ()=>{
-		let classes = await fetch('https://tranquil-thicket-81941.herokuapp.com/classe/', {
+		let classes = await fetch('https://dp-dbv2.herokuapp.com/classe/', {
 			method: 'get',
 			headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")}
 			})
@@ -156,7 +156,7 @@ class NewFaculte extends Component
 			// uploadData is the faculty to be created... verify that the data in it coincides with the data to be uploaded then upload. without which please try to complete it as it should be.
 			let newFilieres = this.state.filieres.map(filiere=>{ return{nomFiliere: filiere.nomFiliere, maxNiveau: filiere.niveauMax, startDate: Date.now()}})
 			this.setState({spin:true, spinMessage:"Nous creeons la faculte"})
-			fetch('https://tranquil-thicket-81941.herokuapp.com/faculty/new', {
+			fetch('https://dp-dbv2.herokuapp.com/faculty/new', {
             method: 'post',
             headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")},
             body: JSON.stringify({
@@ -247,14 +247,14 @@ class NewFaculte extends Component
 	}
 
 	componentDidMount(){
-		fetch('https://tranquil-thicket-81941.herokuapp.com/faculty/', {
+		fetch('https://dp-dbv2.herokuapp.com/faculty/', {
             method: 'get',
             headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")}
           })
           .then(response=>response.json())
           .then(async data=>{
             if(data.message){
-	            let classes = await fetch('https://tranquil-thicket-81941.herokuapp.com/classe/', {
+	            let classes = await fetch('https://dp-dbv2.herokuapp.com/classe/', {
 		            method: 'get',
 		            headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")}
 	         		 })

@@ -44,7 +44,7 @@ class PublierNoteExamen extends Component {
         notes.map(subjectNotes=>subjectNotes.map( async note=>{
             let tempNote = note
             tempNote.notes.Examen.published=true
-            let data = await fetch(`https://tranquil-thicket-81941.herokuapp.com/coordo/note/${tempNote.idNote}/publish`, {
+            let data = await fetch(`https://dp-dbv2.herokuapp.com/coordo/note/${tempNote.idNote}/publish`, {
                          method: 'put',
                          headers: {"Content-Type": "application/json",'x-access-token':window.localStorage.getItem("token")},
                          body: JSON.stringify({note: tempNote})
@@ -115,7 +115,7 @@ class PublierNoteExamen extends Component {
     }
 
     componentDidMount(){
-        fetch('https://tranquil-thicket-81941.herokuapp.com/coordo/note', {
+        fetch('https://dp-dbv2.herokuapp.com/coordo/note', {
             method: 'get',
             headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")}
           })

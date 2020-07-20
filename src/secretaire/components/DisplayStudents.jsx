@@ -8,7 +8,7 @@ class DisplayStudents extends Component {
         idClasse:'',
     }
     componentDidMount=()=>{
-        fetch('https://tranquil-thicket-81941.herokuapp.com/faculty/faculty-classes-students')
+        fetch('https://dp-dbv2.herokuapp.com/faculty/faculty-classes-students')
         .then(response=>response.json())
         .then(data=>{
             console.log(data.messages)

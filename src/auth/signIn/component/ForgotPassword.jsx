@@ -47,7 +47,7 @@ class ForgotPassword extends Component {
         // push to the signed in page(depending on the user that is signed in)
         this.setState({spin:true})
         const id = parseJwt(window.localStorage.getItem('token')).id
-        fetch('https://tranquil-thicket-81941.herokuapp.com/reset-password', {
+        fetch('https://dp-dbv2.herokuapp.com/reset-password', {
             method: 'put',
             headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")},
             body: JSON.stringify({

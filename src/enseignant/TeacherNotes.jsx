@@ -26,7 +26,7 @@ class TeacherNotes extends Component {
         }},
     }
     componentDidMount(){
-        fetch('https://tranquil-thicket-81941.herokuapp.com/teacher/notes/teacher-notes', {
+        fetch('https://dp-dbv2.herokuapp.com/teacher/notes/teacher-notes', {
             method: 'get',
             headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")}
           })
@@ -170,7 +170,7 @@ class TeacherNotes extends Component {
                 so beg Angelo to adjust that
             */
         //    noNotes.map(note=>{
-        //        fetch('https://tranquil-thicket-81941.herokuapp.com/teacher/notes/teacher-notes', {
+        //        fetch('https://dp-dbv2.herokuapp.com/teacher/notes/teacher-notes', {
         //            method: 'get',
         //            headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")}
         //         })
@@ -193,7 +193,7 @@ class TeacherNotes extends Component {
             idEtudiant:std.idEtudiant,
             notes:{...std.notes, [this.state.typeEvaluation]:{ note: Number(e.target.value), published: std.notes[this.state.typeEvaluation].published }}
         }
-       fetch(`https://tranquil-thicket-81941.herokuapp.com/teacher/notes/${newNote.idNote}/update`, {
+       fetch(`https://dp-dbv2.herokuapp.com/teacher/notes/${newNote.idNote}/update`, {
                          method: 'put',
                          headers: {'Content-Type': 'application/json','x-access-token':window.localStorage.getItem("token")},
                          body: JSON.stringify({
